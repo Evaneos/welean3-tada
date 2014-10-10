@@ -27,7 +27,8 @@
         }
     ],
     "require" : {
-        "evaneos/evframework" : "dev-master"
+        "evaneos/evframework" : "dev-master",
+        "guzzlehttp/guzzle": "3.8.1"
     },
     "autoload": {
         "psr-4": {
