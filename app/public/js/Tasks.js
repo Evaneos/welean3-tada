@@ -2,7 +2,7 @@ var Tasks = {};
 
 Tasks._task = {};
 Tasks._tasks = [];
-Tasks._breadcrumb = {};
+Tasks._breadcrumb = [];
 
 Tasks.initChildren = function(id, callback) {
     var url = "";
@@ -57,7 +57,7 @@ Tasks.initTask = function(id, callback) {
     }
 };
 
-Tasks.initBreadCrumb = function(id, callback) {
+Tasks.initBreadcrumb = function(id, callback) {
     if (id == 0) {
 
         Tasks._breadcrumb = {};
@@ -68,7 +68,7 @@ Tasks.initBreadCrumb = function(id, callback) {
             url: "/rest/tasks/" + id + "/breadcrumb",
             success: function(data) {
                 for (var i = 0 ; i < data.length ; i ++) {
-                    Tasks._breadcrumb.push(data[i].data)
+                    Tasks._breadcrumb.push(data[i].data);
                 };
                 callback();
             },
