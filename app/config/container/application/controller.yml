@@ -2,14 +2,17 @@ classes :
     IndexController :
         class : \Tada\Controller\IndexController
 
-
     GetAllController :
         class : \Tada\Controller\GetAllController
         call :
             setTaskService : [ @Berthe-tasks-Service ]
 
-
     UpdateTaskController :
         class : \Tada\Controller\UpdateTaskController
+        call :
+            setTaskService : [ @Berthe-tasks-Service ]
+
+    CreateTaskController :
+        class : \Tada\Controller\CreateTaskController
         call :
             setTaskService : [ @Berthe-tasks-Service ]

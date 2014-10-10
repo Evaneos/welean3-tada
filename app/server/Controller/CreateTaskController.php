@@ -6,7 +6,7 @@ use Pyrite\Response\ResponseBag;
 use Symfony\Component\HttpFoundation\Request;
 use Pyrite\Layer\Executor\Executable;
 
-class UpdateTaskController implements Executable
+class CreateTaskController implements Executable
 {
     /** @var  \Berthe\Service */
     protected $service;
@@ -19,9 +19,9 @@ class UpdateTaskController implements Executable
     public function execute(Request $request, ResponseBag $bag)
     {
         $post = $bag->get('post');
-        $task = $this->service->getById($request->get('id'));
-        $this->service->save($task, $post);
-        $bag->setResultCode(204);
+        $post = $this->service->createNew($post);
+        $bag->setResultCode(201);
+        $bag->setResult($post->getId());
         return "success";
     }
 

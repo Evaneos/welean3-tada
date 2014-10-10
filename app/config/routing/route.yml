@@ -18,3 +18,22 @@ routes:
                 # ViewRenderer:
                 #     success: /browser/twig/index/index.html.twig
                 Executor: [ IndexController ]
+    create:
+        route:
+            pattern: "/tasks"
+            methods: [ post ]
+        dispatch:
+            PyriteSessionFactory: { 'start': true }
+            PyriteApplicationFactory:
+                ApiLayer : []
+                Executor: [ CreateTaskController ]
+
+    update:
+        route:
+            pattern: "/tasks/{id}"
+            methods: [ put, patch ]
+        dispatch:
+            PyriteSessionFactory: { 'start': true }
+            PyriteApplicationFactory:
+                ApiLayer : []
+                Executor: [ UpdateTaskController ]
