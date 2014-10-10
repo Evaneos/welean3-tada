@@ -13,3 +13,11 @@ routes:
                 # ViewRenderer:
                 #     success: /browser/twig/index/index.html.twig
                 Executor: [ IndexController ]
+    get-all:
+        route:
+            pattern: "/getall.json"
+            methods: [ get ]
+        dispatch:
+            PyriteSessionFactory: { 'start': true }
+            PyriteApplicationFactory:
+                Executor: [ GetAllController ]

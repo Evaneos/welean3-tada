@@ -1,3 +1,5 @@
 classes :
     IndexController :
         class : \Tada\Controller\IndexController
+    GetAllController :
+        class : \Tada\Controller\GetAllController

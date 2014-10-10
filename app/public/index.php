@@ -11,6 +11,8 @@ use Pyrite\Kernel\PyriteKernel as PyriteKernel;
 
 date_default_timezone_set('Europe/Paris');
 
+define('ROOT_DIR', dirname(__DIR__));
+
 // We use the compiled version of the configuration
 // If you want to compile the configuration you should run compile.php
 // In dev env you can use grunt to automate this. Run grunt and a compiled version of the configuration will be created.
