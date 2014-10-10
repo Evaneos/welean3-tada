@@ -65,10 +65,6 @@ TaskMediator.initData = function() {
     $(".level2").show();
 }
 
-TaskMediator.setBreadcrumb = function() {
-
-}
-
 TaskMediator.compileTemplate = function() {
     TaskMediator.templates.leveln = TaskMediator.compileTemplateName('leveln');
     TaskMediator.templates.task = TaskMediator.compileTemplateName('partial-task');

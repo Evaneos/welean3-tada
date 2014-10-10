@@ -11,6 +11,8 @@ $( document ).ready(function() {
     TaskMediator.init();
     TaskMediator.initEvents();
 
+    BreadcrumbMediator.init();
+
     var socket = io(SOCKET_HOST);
 
     socket.on('object changed', function(data) {
@@ -28,7 +30,7 @@ $( document ).ready(function() {
 
 function init(id) {
     Tasks.initTask(id, TaskMediator.initData);
-    Tasks.initBreadcrumb(id, TaskMediator.setBreadcrumb);
+    Tasks.initBreadcrumb(id, BreadcrumbMediator.setBreadcrumb);
 }
 
 TaskMediator.onHashChange = function(event) {
