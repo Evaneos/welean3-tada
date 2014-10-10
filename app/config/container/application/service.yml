@@ -1,0 +1,9 @@
+classes :
+    HttpClient :
+        class : \Guzzle\Http\Client
+
+    NotificationService :
+        class : \Tada\Service\NotificationService
+        arguments : [ %notification.host, %notification.port, %notification.uri ]
+        call :
+            setClient : [ @HttpClient ]

@@ -4,4 +4,5 @@ include :
     - application/controller.yml
     - application/layer.yml
     - application/hooks.yml
+    - application/service.yml
     - application/rest.package.yml
