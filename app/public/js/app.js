@@ -11,7 +11,19 @@ $( document ).ready(function() {
     TaskMediator.init();
     TaskMediator.initEvents();
 
-    //var socket = io(SOCKET_HOST);
+    var socket = io(SOCKET_HOST);
+
+    socket.on('object changed', function(data) {
+        if (data.type == "creation") {
+            console.info('object created', data.data);
+        }
+        else if (data.type == "update") {
+            console.info('object updated', data.data);
+        }
+        else {
+            console.info('unknown message', data);
+        }
+    })
 });
 
 function init(id) {

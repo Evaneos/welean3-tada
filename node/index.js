@@ -37,10 +37,16 @@ io.on('connection', function(socket){
 
 // LISTENING TO PHP CONNECTIONS
 var appInternal = require('express')();
+var bodyParser = require('body-parser');
+appInternal.use(bodyParser());
 var httpInternal = require('http').Server(appInternal);
 
 
 appInternal.post('/notification', function(req, res){
+    for (var sockId in sockets) {
+        sockets[sockId].emit('object changed', req.body);
+    }
+
     res.send('ok');
 });
 

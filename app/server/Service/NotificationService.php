@@ -49,7 +49,7 @@ class NotificationService
      */
     public function notifyCreation(Task $task)
     {
-        $request = $this->client->post($this->endpoint, array (
+        $request = $this->client->post($this->endpoint, array(), array (
             'type' => 'creation',
             'data' => json_encode($task)
         ));
@@ -65,7 +65,7 @@ class NotificationService
      */
     public function notifyUpdate(Task $task)
     {
-        $request = $this->client->post($this->endpoint, array (
+        $request = $this->client->post($this->endpoint, array(), array (
             'type' => 'update',
             'data' => json_encode($task)
         ));
