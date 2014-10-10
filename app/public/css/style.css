@@ -49,21 +49,15 @@ body {
 * TASKS
 * ***************/
 
-h1 {
-    font-size: 25px;
-    padding: 10px 0 0px 0;
-    margin: 0px
-}
-
 .task {
     position: relative;
 }
 
-.task.plus {
+.task .plus {
     cursor: pointer;
 }
 
-.task.plus::before {
+.task .plus::before {
     position: absolute;
     left: -20px;
     content:"+";
@@ -78,7 +72,12 @@ h1 {
     font-size: 13px;
 }
 
-.task.plus:hover::before {
+.task .plus.open::before {
+    content:"-";
+
+}
+
+.task .plus:hover::before {
     background-color: #ddd;
     color: white;
 }
@@ -92,9 +91,20 @@ h1 {
     text-overflow: ellipsis;
 }
 
+.level1 {
+    font-size: 25px;
+    padding: 10px 0 0px 0;
+    margin: 0px;
+}
+
+.level1 > .task > .plus {
+    display: none;
+}
+
 .level2 {
     font-size: 20px;
     padding: 15px 0 2px 0;
+    margin-left: 20px;
 }
 
 .level3 {
@@ -115,4 +125,20 @@ h1 {
 
 .level4 .description, .level5 .description, .level6 .description, .level7 .description {
     font-size: 11px;
+}
+
+.inputInherit {
+    font-size: inherit;
+    padding: 1px;
+    margin: inherit;
+    color: inherit;
+    border:solid 1px #ddd;
+    border-width: 0 0 1px 0;
+    font-family: inherit;
+    margin: -1px -1px -2px -1px;
+
+}
+
+.inputInherit {
+    outline: 0;
 }
