@@ -29,7 +29,7 @@ class TaskREST extends \Pyrite\PyRest\PyRestObject
     protected $id;
     protected $title;
     protected $description;
-    protected $parent_id;
-    protected $updated_at;
-    protected $created_at;
+    protected $parentId;
+    protected $updatedAt;
+    protected $createdAt;
 }
