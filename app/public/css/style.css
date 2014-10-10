@@ -1,0 +1,118 @@
+body {
+    background-color: rgb(249, 249, 250);
+    color: #444;
+    font-family: Georgia, Times, serif;
+    overflow-y: scroll;
+}
+
+.content {
+    max-width: 700px;
+    position: relative;
+    background: #fff;
+    opacity: 1;
+    padding: 30px 60px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 5px;
+    border: solid 1px #d2d2d2;
+}
+
+/*****************
+* BREADCRUMB
+* ***************/
+
+.breadcrumb {
+    border-bottom: solid 1px #eee;
+    padding-bottom: 5px;
+}
+
+.bc-item {
+    color: #bbb;
+    text-decoration: none;
+    margin: 0 8px;
+    position: relative;
+}
+
+.bc-item:hover {
+    text-decoration: underline;
+}
+
+.bc-item::after {
+    position: absolute;
+    right: -15px;
+    content: " > ";
+    color: #ddd;
+    text-decoration: none;
+}
+
+/*****************
+* TASKS
+* ***************/
+
+h1 {
+    font-size: 25px;
+    padding: 10px 0 0px 0;
+    margin: 0px
+}
+
+.task {
+    position: relative;
+}
+
+.task.plus {
+    cursor: pointer;
+}
+
+.task.plus::before {
+    position: absolute;
+    left: -20px;
+    content:"+";
+    opacity: 1;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    padding: 0px 0px;
+    margin: 2px;
+    color: #ddd;
+    text-align: center;
+    font-size: 13px;
+}
+
+.task.plus:hover::before {
+    background-color: #ddd;
+    color: white;
+}
+
+.description {
+    white-space:nowrap;
+    overflow:hidden;
+    display: block;
+    color: #bbb;
+    font-size: 13px;
+    text-overflow: ellipsis;
+}
+
+.level2 {
+    font-size: 20px;
+    padding: 15px 0 2px 0;
+}
+
+.level3 {
+    font-size: 15px;
+    padding: 4px 0px;
+    margin-left: 20px;
+}
+
+.level3 .description {
+    font-size: 12px;
+}
+
+.level4, .level5, .level6, .level7 {
+    font-size: 13px;
+    padding: 2px 0px;
+    margin-left: 20px;
+}
+
+.level4 .description, .level5 .description, .level6 .description, .level7 .description {
+    font-size: 11px;
+}
