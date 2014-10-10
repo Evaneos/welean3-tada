@@ -1,0 +1,4 @@
+parameters :
+    crud :
+        packages :
+            tasks : { 'vo' : '\Tada\Model\Task', 'table' : 'task' }
