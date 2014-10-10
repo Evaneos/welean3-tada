@@ -1,0 +1,3 @@
+classes :
+    IndexController :
+        class : \Tada\Controller\IndexController

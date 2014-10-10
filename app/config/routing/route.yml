@@ -1,0 +1,15 @@
+routes:
+    index:
+        route:
+            pattern: "/"
+            methods: [ get ]
+        dispatch:
+            PyriteSessionFactory: { 'start': true }
+            PyriteApplicationFactory:
+                PhtmlRenderer[0] : [ index/layout.phtml ]
+                PhtmlRenderer[1] : [ index/head.phtml, head ]
+                PhtmlRenderer[2] : [ index/index.phtml ]
+
+                # ViewRenderer:
+                #     success: /browser/twig/index/index.html.twig
+                Executor: [ IndexController ]

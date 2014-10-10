@@ -1,2 +1,3 @@
 nginx_error.log
 nginx_access.log
+php_errors.log

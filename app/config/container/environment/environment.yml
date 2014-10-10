@@ -1,0 +1,28 @@
+parameters :
+    app_name : "Tada.io"
+
+    root_dir : /welean3-tada/app
+    view_dir : /welean3-tada/app/browser/twig
+    secured_dir: /welean3-tada/tmp
+    production_mode: false
+
+    root_url: http://www.local.tada.io
+
+    cookie :
+        domain : .local.tada.io
+
+    default_locale:
+        default: fr
+
+    db :
+        adapter : PDO_PGSQL
+        params :
+            host : 127.0.0.1
+            port : 5432
+            username : postgres
+            password : postgres
+            dbname : postgres
+
+    memcached :
+        host : 127.0.0.1
+        port : 11211

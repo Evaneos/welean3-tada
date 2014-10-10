@@ -1,0 +1,37 @@
+{
+    "minimum-stability" : "dev",
+    "repositories" : [
+        {
+            "type" : "vcs",
+            "url" : "git@github.com:Evaneos/EVFramework.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:Evaneos/dic-it.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:Evaneos/translations.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:Evaneos/pyrite.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:Evaneos/trolamine.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:Evaneos/berthe.git"
+        }
+    ],
+    "require" : {
+        "evaneos/evframework" : "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tada\\": "server/"
+        }
+    }
+}
