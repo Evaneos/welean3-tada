@@ -82,6 +82,22 @@ body {
     color: white;
 }
 
+.task:hover .fa-chain {
+    display: inline;
+    text-decoration: none;
+}
+
+.fa-chain {
+    display: none;
+    font-size: 70%;
+    color: #ddd;
+    margin-left: 0.3em;
+}
+
+.fa-chain:hover {
+    color:#444;
+}
+
 .description {
     white-space:nowrap;
     overflow:hidden;
@@ -128,6 +144,7 @@ body {
 }
 
 .inputInherit {
+    display: none;
     font-size: inherit;
     padding: 1px;
     margin: inherit;
@@ -136,9 +153,18 @@ body {
     border-width: 0 0 1px 0;
     font-family: inherit;
     margin: -1px -1px -2px -1px;
+    outline: 0;
 
 }
 
-.inputInherit {
-    outline: 0;
+.edit .inputInherit {
+    display: inline;
+}
+
+.edit .editable {
+    display: none;
+}
+
+.editable {
+    display: inline;
 }

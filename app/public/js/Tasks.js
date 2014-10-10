@@ -5,7 +5,7 @@ Tasks._tasks = [];
 
 Tasks.initTask = function(id, callback) {
     $.ajax({
-        url: "data.json?id="+id,
+        url: "data"+id+".json?id="+id,
         success: function(data) {
             Tasks.setTask(data);
             callback(data);
