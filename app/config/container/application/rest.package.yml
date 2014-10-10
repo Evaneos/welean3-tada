@@ -1,3 +1,8 @@
+parameters :
+    crud :
+        packages :
+            tasks : { 'vo' : '\Tada\Model\Task', 'rest' : '\Tada\REST\TaskREST', 'table' : 'task' }
+
 classes :
     Berthe-tasks-RESTBuilder :
         class : \Tada\RESTBuilder\TaskRESTBuilder
@@ -20,8 +25,3 @@ classes :
 
     Berthe-tasks-Builder :
         class : \Tada\Model\TaskBuilder
-
-parameters :
-    crud :
-        packages :
-            tasks : { 'vo' : '\Tada\Model\Task', 'rest' : '\Tada\REST\TaskREST', 'table' : 'task' }
