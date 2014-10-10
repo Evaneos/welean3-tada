@@ -1,3 +1,6 @@
+include:
+    - rest.yml
+
 routes:
     index:
         route:
@@ -8,20 +11,13 @@ routes:
             PyriteApplicationFactory:
                 PhtmlRenderer[0] : [ main_layout.phtml ]
                 PhtmlRenderer[1] : [ index/layout.phtml ]
-                PhtmlRenderer[2] : [ index/head.phtml, head ]
-                PhtmlRenderer[3] : [ index/index.phtml ]
+                PhtmlRenderer[2] : [ index/head.phtml, header ]
+                PhtmlRenderer[3] : [ index/template.phtml, template ]
+                PhtmlRenderer[4] : [ index/task.phtml, task ]
 
                 # ViewRenderer:
                 #     success: /browser/twig/index/index.html.twig
                 Executor: [ IndexController ]
-    get-all:
-        route:
-            pattern: "/tasks"
-            methods: [ get ]
-        dispatch:
-            PyriteSessionFactory: { 'start': true }
-            PyriteApplicationFactory:
-                Executor: [ GetAllController ]
     create:
         route:
             pattern: "/tasks"
