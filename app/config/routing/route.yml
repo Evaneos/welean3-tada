@@ -35,5 +35,15 @@ routes:
                 ApiLayer : []
                 Executor: [ UpdateTaskController ]
 
+    breadcrumb:
+        route:
+            pattern: "/rest/tasks/{id}/breadcrumb"
+            methods: [ get ]
+        dispatch:
+            PyriteSessionFactory: { 'start': true }
+            PyriteApplicationFactory:
+                OutputLayer:  [ ]
+                Executor: [ TaskBreadcrumbController ]
+
 include:
     - rest.yml

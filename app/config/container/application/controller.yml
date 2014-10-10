@@ -18,3 +18,10 @@ classes :
         class : \Tada\Controller\CreateTaskController
         call :
             setTaskService : [ @Berthe-tasks-Service ]
+
+    TaskBreadcrumbController :
+        class : \Tada\Controller\TaskBreadcrumbController
+        call :
+            setTaskService : [ @Berthe-tasks-Service ]
+            setBuilder : [ @Berthe-tasks-RESTBuilder ]
+            setSerializer : [ @EmbedSerializer ]
