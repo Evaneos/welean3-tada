@@ -22,11 +22,22 @@ routes:
             PyriteSessionFactory: { 'start': true }
             PyriteApplicationFactory:
                 Executor: [ GetAllController ]
-    update:
+    create:
         route:
-            pattern: "/update-task"
+            pattern: "/tasks"
             methods: [ post ]
         dispatch:
             PyriteSessionFactory: { 'start': true }
             PyriteApplicationFactory:
+                ApiLayer : []
+                Executor: [ CreateTaskController ]
+
+    update:
+        route:
+            pattern: "/tasks/{id}"
+            methods: [ put, patch ]
+        dispatch:
+            PyriteSessionFactory: { 'start': true }
+            PyriteApplicationFactory:
+                ApiLayer : []
                 Executor: [ UpdateTaskController ]

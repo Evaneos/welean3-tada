@@ -2,4 +2,6 @@ include :
     - ../../vendor/evaneos/evframework/config/container/container.yml
     - environment/environment.yml
     - application/controller.yml
+    - application/layer.yml
+    - application/hooks.yml
     - application/rest.package.yml

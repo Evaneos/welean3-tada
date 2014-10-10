@@ -1,0 +1,3 @@
+classes :
+    ApiLayer :
+        class : \Tada\Layer\ApiLayer

@@ -1,3 +1,16 @@
+classes :
+  Berthe-tasks-Manager :
+      class : \Berthe\BaseManager
+      call :
+          addSaveHook[0] : [ @CreatedDateSaveHook ]
+          addSaveHook[1] : [ @UpdatedDateSaveHook ]
+          setValidator : [ @Berthe-tasks-Validator ]
+          setStorage : [ @Berthe-tasks-Storage ]
+          setVOFQCN : [ '\Tada\Model\Task' ]
+
+  Berthe-tasks-Builder :
+      class : \Tada\Model\TaskBuilder
+
 parameters :
     crud :
         packages :

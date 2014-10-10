@@ -1,0 +1,5 @@
+classes :
+    CreatedDateSaveHook :
+        class : \Tada\Hook\CreatedDateSaveHook
+    UpdatedDateSaveHook :
+        class : \Tada\Hook\UpdatedDateSaveHook
