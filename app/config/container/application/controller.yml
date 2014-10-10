@@ -1,6 +1,8 @@
 classes :
     IndexController :
         class : \Tada\Controller\IndexController
+        props :
+            socketUrl : %socket_url
 
     GetAllController :
         class : \Tada\Controller\GetAllController

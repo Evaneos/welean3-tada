@@ -96,4 +96,8 @@ $( document ).ready(function() {
 
     // InitEvents
     initEvents();
+
+
+
+    var socket = io(SOCKET_HOST);
 });

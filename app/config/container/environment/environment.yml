@@ -7,6 +7,7 @@ parameters :
     production_mode: false
 
     root_url: http://www.local.tada.io
+    socket_url: http://www.local.tada.io:3000
 
     cookie :
         domain : .local.tada.io
