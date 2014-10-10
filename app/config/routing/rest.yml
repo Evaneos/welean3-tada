@@ -1,0 +1,133 @@
+routes:
+    pyrest-get-all:
+        route:
+            pattern: "/rest/{resource}"
+            methods: [ get ]
+            regexp:
+                resource : ^[a-zA-Z]{1,}$
+        dispatch:
+            PyriteSessionFactory : { 'start' : true }
+            PyriteApplicationFactory :
+                AuthenticationLayer: [ ]
+                OutputLayer:  [ ]
+                PyRestLayer: [ 'getAll' ]
+                ExecutorExtended : { class : 'BerthePyRestController', method : 'getAll' }
+    pyrest-sub-get-all:
+        route:
+            pattern: "/rest/{filter_resource}/{filter_id}/{embed}"
+            methods: [ get ]
+            regexp:
+                filter_resource : ^[a-zA-Z]{1,}$
+                filter_id : ^[0-9A-Za-z]*$
+                embed : ^[a-zA-Z]{1,}$
+        dispatch:
+            PyriteSessionFactory : { 'start' : true }
+            PyriteApplicationFactory :
+                AuthenticationLayer: [ ]
+                OutputLayer:  [ ]
+                PyRestLayer: [ 'nestedAll' ]
+                ExecutorExtended : { class : 'BerthePyRestController', method : 'getAll' }
+    pyrest-options-all:
+        route:
+            pattern: "/rest/{resource}"
+            methods: [ options ]
+            regexp:
+                resource : ^[a-zA-Z]{1,}$
+        dispatch:
+            PyriteSessionFactory : { 'start' : true }
+            PyriteApplicationFactory :
+                AuthenticationLayer: [ ]
+                OutputLayer:  [ ]
+                PyRestLayer: [ 'optionsGetAll' ]
+    pyrest-get-one:
+        route:
+            pattern: "/rest/{resource}/{id}"
+            methods: [ get ]
+            regexp :
+                resource : ^[a-zA-Z]{1,}$
+                id : ^[0-9A-Za-z]*$
+        dispatch:
+            PyriteSessionFactory : { 'start' : true }
+            PyriteApplicationFactory :
+                AuthenticationLayer: [ ]
+                OutputLayer:  [ ]
+                PyRestLayer: [ 'get' ]
+                ExecutorExtended : { class : 'BerthePyRestController', method : 'get' }
+    pyrest-post:
+        route:
+            pattern: "/rest/{resource}"
+            methods: [ post ]
+        dispatch:
+            PyriteSessionFactory : { 'start' : true }
+            PyriteApplicationFactory :
+                AuthenticationLayer: [ ]
+                PyRestLayer: [ 'post' ]
+                ExecutorExtended : { class : 'BerthePyRestController', method : 'post' }
+    pyrest-put-all:
+        route:
+            pattern: "/rest/{resource}"
+            methods: [ put ]
+        dispatch:
+            PyriteSessionFactory : { 'start' : true }
+            PyriteApplicationFactory :
+                AuthenticationLayer: [ ]
+                PyRestLayer: [ 'putAll' ]
+                ExecutorExtended : { class : 'BerthePyRestController', method : 'putAll' }
+    pyrest-put-one:
+        route:
+            pattern: "/rest/{resource}/{id}"
+            methods: [ put ]
+            regexp :
+                resource : ^[a-zA-Z]{1,}$
+                id : ^[0-9A-Za-z]*$
+        dispatch:
+            PyriteSessionFactory : { 'start' : true }
+            PyriteApplicationFactory :
+                AuthenticationLayer: [ ]
+                PyRestLayer: [ 'put' ]
+                ExecutorExtended : { class : 'BerthePyRestController', method : 'put' }
+    pyrest-patch-all:
+        route:
+            pattern: "/rest/{resource}"
+            methods: [ patch ]
+        dispatch:
+            PyriteSessionFactory : { 'start' : true }
+            PyriteApplicationFactory :
+                AuthenticationLayer: [ ]
+                PyRestLayer: [ 'patchAll' ]
+                ExecutorExtended : { class : 'BerthePyRestController', method : 'patchAll' }
+    pyrest-patch-one:
+        route:
+            pattern: "/rest/{resource}/{id}"
+            methods: [ patch ]
+            regexp :
+                resource : ^[a-zA-Z]{1,}$
+                id : ^[0-9A-Za-z]*$
+        dispatch:
+            PyriteSessionFactory : { 'start' : true }
+            PyriteApplicationFactory :
+                AuthenticationLayer: [ ]
+                PyRestLayer: [ 'patch' ]
+                ExecutorExtended : { class : 'BerthePyRestController', method : 'patch' }
+    pyrest-delete-all:
+        route:
+            pattern: "/rest/{resource}"
+            methods: [ delete ]
+        dispatch:
+            PyriteSessionFactory : { 'start' : true }
+            PyriteApplicationFactory :
+                AuthenticationLayer: [ ]
+                PyRestLayer: [ 'deleteAll' ]
+                ExecutorExtended : { class : 'BerthePyRestController', method : 'deleteAll' }
+    pyrest-delete-one:
+        route:
+            pattern: "/rest/{resource}/{id}"
+            methods: [ delete ]
+            regexp :
+                resource : ^[a-zA-Z]{1,}$
+        dispatch:
+            PyriteSessionFactory : { 'start' : true }
+            PyriteApplicationFactory :
+                AuthenticationLayer: [ ]
+                PyRestLayer: [ 'delete' ]
+                ExecutorExtended : { class : 'BerthePyRestController', method : 'delete' }
