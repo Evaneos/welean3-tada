@@ -5,10 +5,8 @@ $( document ).ready(function() {
     // Compile template
     TaskMediator.compileTemplate();
 
-    // Get data
-    init(0);
-
     window.onhashchange = TaskMediator.onHashChange;
+    TaskMediator.onHashChange();
 
     TaskMediator.init();
     TaskMediator.initEvents();
@@ -18,6 +16,7 @@ $( document ).ready(function() {
 
 function init(id) {
     Tasks.initTask(id, TaskMediator.initData);
+    Tasks.initBreadcrumb(id, TaskMediator.setBreadcrumb);
 }
 
 TaskMediator.onHashChange = function(event) {

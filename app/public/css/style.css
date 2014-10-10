@@ -83,7 +83,8 @@ body {
 }
 
 .task:hover .fa-chain {
-    display: inline;
+    display: inline-block;
+    margin-bottom: 4px;
     text-decoration: none;
 }
 
@@ -92,6 +93,7 @@ body {
     font-size: 70%;
     color: #ddd;
     margin-left: 0.3em;
+    vertical-align: middle;
 }
 
 .fa-chain:hover {
@@ -99,12 +101,21 @@ body {
 }
 
 .description {
+    clear:both;
     white-space:nowrap;
     overflow:hidden;
     display: block;
+    text-overflow: ellipsis;
     color: #bbb;
     font-size: 13px;
+}
+
+.title .editable {
+    white-space:nowrap;
+    overflow:hidden;
     text-overflow: ellipsis;
+    display: inline-block;
+    max-width: 500px;
 }
 
 .level1 {

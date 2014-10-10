@@ -10,9 +10,12 @@
         <span class="{{#ifel children}}plus{{/ifel}}"></span>
         <span class='title'>
             <span class='editable'>{{title}}</span>
+            <a href="#{{id}}" class="fa fa-chain"></a>
             <input class='inputInherit mousetrap' type="text" value="{{title}}"/>
         </span>
-        <a href="#{{id}}" class="fa fa-chain"></a>
         <span class='description'>{{description}}</span>
     </div>
+</script>
+<script id="breadcrumb-item" type="text/x-handlebars-template">
+    <a href="#{{id}}" class="bc-item">{{title}}</a>
 </script>

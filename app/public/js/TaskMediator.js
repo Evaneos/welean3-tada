@@ -50,7 +50,7 @@ TaskMediator.init = function() {
     Handlebars.registerPartial("task", $("#partial-task").html());
 }
 
-TaskMediator.initData = function(data) {
+TaskMediator.initData = function() {
     // clean view
     $(".levels").html("");
 
@@ -63,6 +63,10 @@ TaskMediator.initData = function(data) {
     $(".level").hide();
     $(".level1").show();
     $(".level2").show();
+}
+
+TaskMediator.setBreadcrumb = function() {
+
 }
 
 TaskMediator.compileTemplate = function() {
