@@ -8,7 +8,11 @@
 <script id="partial-task" type="text/x-handlebars-template">
     <div id="tada-{{id}}" class="task ">
         <span class="{{#ifel children}}plus{{/ifel}}"></span>
-        <span class='title'>{{title}}</span>
+        <span class='title'>
+            <span class='editable'>{{title}}</span>
+            <input class='inputInherit mousetrap' type="text" value="{{title}}"/>
+        </span>
+        <a href="#{{id}}" class="fa fa-chain"></a>
         <span class='description'>{{description}}</span>
     </div>
 </script>

@@ -25,8 +25,10 @@ TaskMediator.renderTask = function(task) {
         var parentDom = TaskMediator.getDomFromId(task.parent_id);
         if (typeof parentDom == 'undefined' || parentDom.length == 0 ) {
             parentDom = $('.levels');
+            dom.appendTo(parentDom);
+        } else {
+            dom.insertAfter(parentDom);
         }
-        dom.insertAfter(parentDom);
     }
 }
 
@@ -49,7 +51,6 @@ TaskMediator.init = function() {
 }
 
 TaskMediator.initData = function(data) {
-    TaskMediator.init();
     // clean view
     $(".levels").html("");
 
@@ -58,8 +59,6 @@ TaskMediator.initData = function(data) {
     for (var i = 0 ; i < tasks.length ; i++) {
         TaskMediator.renderTask(tasks[i]);
     }
-
-    TaskMediator.initEvents();
 
     $(".level").hide();
     $(".level1").show();
@@ -95,16 +94,24 @@ TaskMediator.resizeInput = function() {
 
 TaskMediator.onDblclickTitle = function(e) {
     var el = $(this);
-    var content = el.html();
-    var input = $("<input class='inputInherit' type='text' value='"+content+"'/>").insertAfter($(this)).select();
+    $(el).addClass('edit');
+    var input = $(el).children("input").select();
+    var prevValue = input.val();
     TaskMediator.resizeInput.call(input);
+    Mousetrap.bind('enter', function() {
+        input.blur();
+    });
+    Mousetrap.bind('esc', function() {
+        input.val(prevValue);
+        input.blur();
+    });
+
     input.on('blur', function(event) {
-        el.show();
+        Mousetrap.unbind('enter');
+        $(el).removeClass('edit');
         var id = TaskMediator.getIdFromDomId($(this).parents('.task').attr('id'));
-        input.remove();
         Tasks.updateTitle(parseInt(id), input.val());
     });
-    el.hide();
     return false;
 
 }

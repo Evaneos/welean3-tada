@@ -6,7 +6,21 @@ $( document ).ready(function() {
     TaskMediator.compileTemplate();
 
     // Get data
-    Tasks.initTask(0, TaskMediator.initData);
+    init(0);
 
-    var socket = io(SOCKET_HOST);
+    window.onhashchange = TaskMediator.onHashChange;
+
+    TaskMediator.init();
+    TaskMediator.initEvents();
+
+    //var socket = io(SOCKET_HOST);
 });
+
+function init(id) {
+    Tasks.initTask(id, TaskMediator.initData);
+}
+
+TaskMediator.onHashChange = function(event) {
+    var id = parseInt(window.location.hash.replace ( /[^\d.]/g, '' ));
+    init(id);
+}
