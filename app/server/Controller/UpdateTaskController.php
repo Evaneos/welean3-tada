@@ -6,7 +6,7 @@ use Pyrite\Response\ResponseBag;
 use Symfony\Component\HttpFoundation\Request;
 use Pyrite\Layer\Executor\Executable;
 
-class GetAllController implements Executable
+class UpdateTaskController implements Executable
 {
     protected $service;
 
@@ -17,16 +17,12 @@ class GetAllController implements Executable
      */
     public function execute(Request $request, ResponseBag $bag)
     {
-        $tasks = $this->service->getAll();
+        // get content from request
 
-        $out = array();
-        foreach($tasks as $task) {
-            $out[] = $task->__toArray();
-        }
-        $json = json_encode($out);
+        // save stuff
+        $task = $this->service->getById(1);
 
-        $bag->addHeader("Content-type", "application/json");
-        $bag->setResult($json);
+        var_dump($task); die();
 
         return "success";
     }

@@ -2,7 +2,7 @@ parameters :
     app_name : "Tada.io"
 
     root_dir : /welean3-tada/app
-    view_dir : /welean3-tada/app/browser/twig
+    view_dir : /welean3-tada/app/browser/phtml
     secured_dir: /welean3-tada/tmp
     production_mode: false
 
@@ -17,11 +17,11 @@ parameters :
     db :
         adapter : PDO_PGSQL
         params :
-            host : 127.0.0.1
+            host : 10.12.20.133
             port : 5432
             username : postgres
             password : postgres
-            dbname : postgres
+            dbname : tada
 
     memcached :
         host : 127.0.0.1

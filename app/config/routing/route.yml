@@ -6,18 +6,27 @@ routes:
         dispatch:
             PyriteSessionFactory: { 'start': true }
             PyriteApplicationFactory:
-                PhtmlRenderer[0] : [ index/layout.phtml ]
-                PhtmlRenderer[1] : [ index/head.phtml, head ]
-                PhtmlRenderer[2] : [ index/index.phtml ]
+                PhtmlRenderer[0] : [ main_layout.phtml ]
+                PhtmlRenderer[1] : [ index/layout.phtml ]
+                PhtmlRenderer[2] : [ index/head.phtml, head ]
+                PhtmlRenderer[3] : [ index/index.phtml ]
 
                 # ViewRenderer:
                 #     success: /browser/twig/index/index.html.twig
                 Executor: [ IndexController ]
     get-all:
         route:
-            pattern: "/getall.json"
+            pattern: "/tasks"
             methods: [ get ]
         dispatch:
             PyriteSessionFactory: { 'start': true }
             PyriteApplicationFactory:
                 Executor: [ GetAllController ]
+    update:
+        route:
+            pattern: "/update-task"
+            methods: [ post ]
+        dispatch:
+            PyriteSessionFactory: { 'start': true }
+            PyriteApplicationFactory:
+                Executor: [ UpdateTaskController ]

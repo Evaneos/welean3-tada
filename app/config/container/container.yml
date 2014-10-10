@@ -2,3 +2,4 @@ include :
     - ../../vendor/evaneos/evframework/config/container/container.yml
     - environment/environment.yml
     - application/controller.yml
+    - application/rest.package.yml
