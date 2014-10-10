@@ -49,10 +49,15 @@ class NotificationService
      */
     public function notifyCreation(Task $task)
     {
-        $this->client->post($this->endpoint, array (
+        $request = $this->client->post($this->endpoint, array (
             'type' => 'creation',
             'data' => json_encode($task)
         ));
+        try {
+            $this->client->send($request);
+        } catch (\Exception $e) {
+            //todo manage errors
+        }
     }
 
     /**
@@ -60,9 +65,14 @@ class NotificationService
      */
     public function notifyUpdate(Task $task)
     {
-        $this->client->post($this->endpoint, array (
+        $request = $this->client->post($this->endpoint, array (
             'type' => 'update',
             'data' => json_encode($task)
         ));
+        try {
+            $this->client->send($request);
+        } catch (\Exception $e) {
+            //todo manage errors
+        }
     }
 }

@@ -1,12 +1,18 @@
 
-<script id="level1" type="text/x-handlebars-template">
-    <h1 id="tada-{{id}}" class="{{level}} parent-id-{{parent_id}}">{{title}}</h1>
+
+<script id="leveln" type="text/x-handlebars-template">
+    <div class='level level{{level}} parent-id-{{parent_id}}'>
+        {{>task}}
+    </div>
 </script>
-<script id="level2" type="text/x-handlebars-template">
-    <div class='{{level}} parent-id-{{parent_id}}'>
-        <div id="tada-{{id}}" class="task {{#ifel children}}plus{{/ifel}}">
-            <span class='title'>{{title}}</span>
-            <span class='description'>{{description}}</span>
-        </div>
+<script id="partial-task" type="text/x-handlebars-template">
+    <div id="tada-{{id}}" class="task ">
+        <span class="{{#ifel children}}plus{{/ifel}}"></span>
+        <span class='title'>
+            <span class='editable'>{{title}}</span>
+            <input class='inputInherit mousetrap' type="text" value="{{title}}"/>
+        </span>
+        <a href="#{{id}}" class="fa fa-chain"></a>
+        <span class='description'>{{description}}</span>
     </div>
 </script>

@@ -1,6 +1,3 @@
-include:
-    - rest.yml
-
 routes:
     index:
         route:
@@ -20,7 +17,7 @@ routes:
                 Executor: [ IndexController ]
     create:
         route:
-            pattern: "/tasks"
+            pattern: "/rest/tasks"
             methods: [ post ]
         dispatch:
             PyriteSessionFactory: { 'start': true }
@@ -30,10 +27,13 @@ routes:
 
     update:
         route:
-            pattern: "/tasks/{id}"
+            pattern: "/rest/tasks/{id}"
             methods: [ put, patch ]
         dispatch:
             PyriteSessionFactory: { 'start': true }
             PyriteApplicationFactory:
                 ApiLayer : []
                 Executor: [ UpdateTaskController ]
+
+include:
+    - rest.yml

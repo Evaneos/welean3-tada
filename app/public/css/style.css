@@ -49,21 +49,15 @@ body {
 * TASKS
 * ***************/
 
-h1 {
-    font-size: 25px;
-    padding: 10px 0 0px 0;
-    margin: 0px
-}
-
 .task {
     position: relative;
 }
 
-.task.plus {
+.task .plus {
     cursor: pointer;
 }
 
-.task.plus::before {
+.task .plus::before {
     position: absolute;
     left: -20px;
     content:"+";
@@ -78,9 +72,30 @@ h1 {
     font-size: 13px;
 }
 
-.task.plus:hover::before {
+.task .plus.open::before {
+    content:"-";
+
+}
+
+.task .plus:hover::before {
     background-color: #ddd;
     color: white;
+}
+
+.task:hover .fa-chain {
+    display: inline;
+    text-decoration: none;
+}
+
+.fa-chain {
+    display: none;
+    font-size: 70%;
+    color: #ddd;
+    margin-left: 0.3em;
+}
+
+.fa-chain:hover {
+    color:#444;
 }
 
 .description {
@@ -92,9 +107,20 @@ h1 {
     text-overflow: ellipsis;
 }
 
+.level1 {
+    font-size: 25px;
+    padding: 10px 0 0px 0;
+    margin: 0px;
+}
+
+.level1 > .task > .plus {
+    display: none;
+}
+
 .level2 {
     font-size: 20px;
     padding: 15px 0 2px 0;
+    margin-left: 20px;
 }
 
 .level3 {
@@ -115,4 +141,30 @@ h1 {
 
 .level4 .description, .level5 .description, .level6 .description, .level7 .description {
     font-size: 11px;
+}
+
+.inputInherit {
+    display: none;
+    font-size: inherit;
+    padding: 1px;
+    margin: inherit;
+    color: inherit;
+    border:solid 1px #ddd;
+    border-width: 0 0 1px 0;
+    font-family: inherit;
+    margin: -1px -1px -2px -1px;
+    outline: 0;
+
+}
+
+.edit .inputInherit {
+    display: inline;
+}
+
+.edit .editable {
+    display: none;
+}
+
+.editable {
+    display: inline;
 }

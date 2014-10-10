@@ -23,13 +23,13 @@ class TaskREST extends \Pyrite\PyRest\PyRestObject
         $this->description = $task->getDescription();
         $this->parentId = $task->getParentId();
         $this->updatedAt = ($task->getUpdatedAt() instanceof \DateTime) ? $task->getUpdatedAt()->format(\DateTime::ISO8601) : null;
-        $this->createdAt = ($task->getCreatedAt() instanceof \DateTime) ? $task->getUpdatedAt()->format(\DateTime::ISO8601) : null;
+        $this->createdAt = ($task->getCreatedAt() instanceof \DateTime) ? $task->getCreatedAt()->format(\DateTime::ISO8601) : null;
     }
 
     protected $id;
     protected $title;
     protected $description;
-    protected $parent_id;
-    protected $updated_at;
-    protected $created_at;
+    protected $parentId;
+    protected $updatedAt;
+    protected $createdAt;
 }
