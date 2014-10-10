@@ -33,5 +33,5 @@ function init(id) {
 
 TaskMediator.onHashChange = function(event) {
     var id = parseInt(window.location.hash.replace ( /[^\d.]/g, '' ));
-    init(id);
+    init(isNaN(id) ? 0 : id);
 }

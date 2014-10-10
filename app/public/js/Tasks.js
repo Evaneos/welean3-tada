@@ -29,7 +29,6 @@ Tasks.initTask = function(id, callback) {
     var number = 100;
     var task = {};
     if (id == 0) {
-
         Tasks.setTask({
             "id": 0,
             "title": "Home",
@@ -39,7 +38,6 @@ Tasks.initTask = function(id, callback) {
             "createdAt": "2014-10-10T16:18:03+0200"
         });
         Tasks.initChildren(id, callback);
-
     } else {
         url = "/rest/tasks/"+id+"&number=" + number;
         $.ajax({
