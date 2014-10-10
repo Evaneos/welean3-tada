@@ -9,10 +9,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Pyrite\Layer\Executor\Executable;
 use Tada\Model\Task;
 use Tada\RESTBuilder\TaskRESTBuilder;
+use Tada\Service\TaskService;
 
 class TaskBreadcrumbController implements Executable
 {
-    /** @var  \Berthe\Service */
+    /** @var  TaskService */
     protected $service;
 
     /** @var TaskRESTBuilder */
@@ -29,24 +30,12 @@ class TaskBreadcrumbController implements Executable
      */
     public function execute(Request $request, ResponseBag $bag)
     {
-        $tasks = array();
-        /** @var Task $task */
-        $task = $this->service->getById($request->get('id'));
-        if (!$task) {
+        $tasks = $this->service->getBreadcrumbTasks($request->get('id'));
+        if (null === $tasks) {
             throw new NotFoundException;
         }
 
-        $parentId = $task->getParentId();
-        $tasks[] = $task;
-
-        while ($parentId) {
-            $task = $this->service->getById($task->getParentId());
-            $tasks[] = $task;
-            $parentId = $task->getParentId();
-        }
-
         list($restTasks,,) = $this->builder->convertAll($tasks);
-
         $bag->set('data', $this->serializer->serializeMany($restTasks));
 
         return "success";
