@@ -9,4 +9,9 @@ class TaskFetcher extends \Berthe\Fetcher
     {
         $this->addFilter('parent_id', \Berthe\Fetcher::TYPE_EQ, $id);
     }
+
+    public function filterByHavingNoParent()
+    {
+        $this->addFilter('parent_id', \Berthe\Fetcher::TYPE_IS_NULL, null);
+    }
 }

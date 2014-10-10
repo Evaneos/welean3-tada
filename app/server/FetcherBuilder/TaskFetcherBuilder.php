@@ -20,7 +20,10 @@ class TaskFetcherBuilder extends \EVFramework\Berthe\Fetcher\BaseFetcherBuilder
 
     protected function createFilters(Fetcher $fetcher, PyRestConfiguration $config)
     {
-
+        $config = $config->getConfig(FilterParser::NAME, array());
+        if(array_key_exists('root', $config)) {
+            $fetcher->filterByHavingNoParent();
+        }
     }
 
     protected function createSorts(Fetcher $fetcher, PyRestConfiguration $config)
