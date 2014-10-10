@@ -73,6 +73,7 @@ ADD slash/etc/supervisord.conf.d/nginx.conf         /etc/supervisord.conf.d/ngin
 ADD slash/etc/supervisord.conf.d/php5-fpm.conf      /etc/supervisord.conf.d/php5-fpm.conf
 ADD slash/etc/supervisord.conf.d/ssh.conf           /etc/supervisord.conf.d/ssh.conf
 ADD slash/etc/supervisord.conf.d/memcached.conf     /etc/supervisord.conf.d/memcached.conf
+ADD slash/etc/supervisord.conf.d/nodejs.conf        /etc/supervisord.conf.d/nodejs.conf
 
 ##################
 # AUTHENTICATION
@@ -91,5 +92,8 @@ RUN mkdir -p /var/run/sshd/
 RUN mkdir -p /var/log/memcached/
 
 EXPOSE 80
+EXPOSE 22
+EXPOSE 3000
+EXPOSE 3001
 
 CMD [ supervisord ]

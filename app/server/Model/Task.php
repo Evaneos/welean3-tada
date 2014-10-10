@@ -7,50 +7,59 @@ class Task extends \Berthe\AbstractVO
 {
     const VERSION = 1;
 
-    public function getDatetimeFields() {
+    public function getDatetimeFields()
+    {
         return array('created_at', 'updated_at');
     }
+
     /**
-     * @return DateTime created_at
+     * @var \DateTime
      */
     protected $created_at;
+
     /**
-     * @return string title
-     */
-    protected $title;
-    /**
-     * @return string description
-     */
-    protected $description;
-    /**
-     * @return int parent_id
-     */
-    protected $parent_id;
-    /**
-     * @return DateTime updated_at
+     * @var \DateTime
      */
     protected $updated_at;
 
     /**
-     * @return DateTime updated_at
+     * @var string
+     */
+    protected $title;
+
+    /**
+     * @var string
+     */
+    protected $description;
+
+    /**
+     * @var int parent_id
+     */
+    protected $parent_id;
+
+    /**
+     * @return \DateTime
      */
     public function getUpdatedAt() {
         return $this->updated_at;
     }
+
     /**
-     * @param DateTime $value
+     * @param \DateTime $value
      * @return Task
      */
     public function setUpdatedAt($value) {
         $this->updated_at = $value;
         return $this;
     }
+
     /**
-     * @return int parent_id
+     * @return int
      */
     public function getParentId() {
         return $this->parent_id;
     }
+
     /**
      * @param int $value
      * @return Task
@@ -61,11 +70,12 @@ class Task extends \Berthe\AbstractVO
     }
 
     /**
-     * @return string description
+     * @return string
      */
     public function getDescription() {
         return $this->description;
     }
+
     /**
      * @param string $value
      * @return Task
@@ -76,11 +86,12 @@ class Task extends \Berthe\AbstractVO
     }
 
     /**
-     * @return string title
+     * @return string
      */
     public function getTitle() {
         return $this->title;
     }
+
     /**
      * @param string $value
      * @return Task
@@ -91,18 +102,18 @@ class Task extends \Berthe\AbstractVO
     }
 
     /**
-     * @return DateTime created_at
+     * @return \DateTime
      */
     public function getCreatedAt() {
         return $this->created_at;
     }
+
     /**
-     * @param DateTime $value
+     * @param \DateTime $value
      * @return Task
      */
     public function setCreatedAt($value) {
         $this->created_at = $value;
         return $this;
     }
-
 }

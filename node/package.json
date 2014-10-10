@@ -1,0 +1,9 @@
+{
+  "name": "socket-tada-io",
+  "version": "0.0.1",
+  "description": "socket for tada",
+  "dependencies": {
+    "express": "~4.9.6",
+    "socket.io": "~1.1.0"
+  }
+}

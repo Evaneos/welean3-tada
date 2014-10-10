@@ -1,0 +1,8 @@
+classes :
+    CreatedDateSaveHook :
+        class : \Tada\Hook\CreatedDateSaveHook
+    UpdatedDateSaveHook :
+        class : \Tada\Hook\UpdatedDateSaveHook
+    NotificationSaveHook :
+        class : \Tada\Hook\NotificationSaveHook
+        arguments : [ @NotificationService ]

@@ -96,7 +96,7 @@ TaskMediator.resizeInput = function() {
 TaskMediator.onDblclickTitle = function(e) {
     var el = $(this);
     var content = el.html();
-    var input = $("<input class='inputInherit' type='text' value='"+content+"'/>").insertAfter($(this)).focus();
+    var input = $("<input class='inputInherit' type='text' value='"+content+"'/>").insertAfter($(this)).select();
     TaskMediator.resizeInput.call(input);
     input.on('blur', function(event) {
         el.show();

@@ -7,6 +7,7 @@ parameters :
     production_mode: false
 
     root_url: http://www.local.tada.io
+    socket_url: http://www.local.tada.io:3000
 
     cookie :
         domain : .local.tada.io
@@ -26,3 +27,8 @@ parameters :
     memcached :
         host : 127.0.0.1
         port : 11211
+
+    notification :
+        host : http://127.0.0.1
+        port : 3001
+        uri : /notification
