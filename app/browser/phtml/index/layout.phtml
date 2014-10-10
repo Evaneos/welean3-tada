@@ -1,21 +1,17 @@
-LAYOUT FILE<br />
+<div class="container">
 
-<br /><br />
-<br /><br />
+    <?php echo $this->getResult('header'); ?>
+    <div class='content'>
+        <div class='breadcrumb'>
+            <a href="#" class="bc-item">Home</a>
+            <a href="#" class="bc-item">Evaneos</a>
+            <a href="#" class="bc-item">PRO</a>
+        </div>
+        <div class='level1'></div>
+        <div class='levels'></div>
 
-This part includes the rendered result of head block :<br/ >
-<?php echo $this->getResult('head'); ?>
+    </div>
 
-
-<br /><br />
-<br /><br />
-<br /><br />
-
-This part includes the rendered result :<br/ >
-<?php echo $this->getResult(); ?>
-
-
-<br /><br />
-<br /><br />
-<br /><br />
-<b>See routing file for more informations</b>
+</div>
+<?php echo $this->getResult('task'); ?>
+<?php echo $this->getResult('template'); ?>
