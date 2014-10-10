@@ -25,3 +25,7 @@ classes :
 
     Berthe-tasks-Builder :
         class : \Tada\Model\TaskBuilder
+
+    Berthe-tasks-Service :
+        class: \Tada\Service\TaskService
+        arguments: [ @Berthe-tasks-Manager, @Berthe-tasks-Builder ]
