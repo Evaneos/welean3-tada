@@ -2,7 +2,7 @@ var TaskMediator = {};
 
 TaskMediator.templates = {};
 
-
+TaskMediator.currentId = null;
 
 TaskMediator.init = function() {
 
@@ -30,16 +30,49 @@ TaskMediator.initEvents = function(event) {
 
     $(document).on('keyup', 'input[type="text"]',TaskMediator.resizeInput);
 
-    $(document).on("inview", '.more:visible',  function(event, isInView) {
-        if (isInView) {
-            var id = parseInt($(this).attr('data-link-id'));
-            Tasks.loadChildren(Tasks.hasTask(id), true);
-        }
-    });
-
     $(Tasks).on(Tasks.TASK_UPDATED, TaskMediator.onUpdate);
 
     $(Tasks).on(Tasks.CHILDREN_LOADED, TaskMediator.onChildrenLoaded);
+
+    $(Tasks).on(Tasks.MAIN_TASK_LOADING, function() {
+        $(document).scrollTop(0);
+    });
+
+    TaskMediator.initSortable();
+}
+var loading = false;
+TaskMediator.initLoading = function(task) {
+
+    if (! task.more) {
+        $(".to-be-removed-" + task.id).hide();
+    } else if (loading == false) {
+        $(document).on("inview", '.more:visible',  function(event, isInView) {
+            if (isInView) {
+                var id = parseInt($(this).attr('data-link-id'));
+                $(document).off("inview");
+                loading = false;
+                Tasks.loadChildren(Tasks.hasTask(id), true);
+            }
+        });
+        loading = true;
+    }
+}
+
+TaskMediator.initSortable = function() {
+    // init sortable
+    $( ".tasklist" ).sortable({
+        helper: function(event, ui){
+            var $clone =  $(ui).clone();
+            $clone .css('position','absolute');
+            return $clone.get(0);
+        },
+        stop: function(event, ui) {
+            var task = TaskMediator.getTaskFromDom(ui.item);
+            var nextTask = TaskMediator.getTaskFromDom(ui.item.next());
+            Tasks.updateRank(task, nextTask);
+        }
+    });
+    $( ".tasklist" ).disableSelection();
 }
 
 TaskMediator.renderTask = function(task) {
@@ -63,9 +96,10 @@ TaskMediator.renderTask = function(task) {
             var parentDom = $('.levels');
             dom.appendTo(parentDom);
         } else {
-            dom.insertBefore(insertBeforeDom);
+            dom.appendTo(insertBeforeDom);
         }
     }
+    TaskMediator.initSortable();
 }
 
 TaskMediator.getTemplateName = function(n) {
@@ -86,18 +120,20 @@ TaskMediator.compileTemplateName = function(name) {
 }
 
 TaskMediator.onUpdate = function(event, task) {
-    if (task.level == 1) {
+    if (Tasks.getMainTask().id != TaskMediator.currentId) {
         $(".levels").html("");
+        TaskMediator.currentId = task.id;
     }
+
     TaskMediator.renderTask(task);
     $(".level1").children('.more').show();
+
+    TaskMediator.initLoading(task);
 }
 
 TaskMediator.onChildrenLoaded = function(event, task) {
 
-    if (! task.more) {
-        $(".to-be-removed-" + task.id).hide();
-    }
+    TaskMediator.initLoading(task);
     for(var i = 0 ; i < task.children.length ; i ++) {
         var child = task.children[i];
         // check if task is not already rendered
@@ -184,6 +220,16 @@ TaskMediator.onClickPlus = function(event) {
     }
 }
 
+TaskMediator.getTaskFromDom = function(dom) {
+    var id = TaskMediator.getIdFromDom(dom);
+    return task = Tasks.hasTask(id);
+}
+
 TaskMediator.getIdFromDom = function(dom) {
-    return $(dom).parents('.task').attr('id').replace ( /[^\d.]/g, '' );
+    if (!$(dom).hasClass('level')) {
+        dom = $(dom).parents('.task');
+    } else {
+        dom = dom.find(".task");
+    }
+    return parseInt($(dom).attr('id').replace ( /[^\d.]/g, '' ));
 }

@@ -8,6 +8,7 @@ Tasks.NUMBER = 20;
 Tasks.TASK_UPDATED = "taskUpdated";
 Tasks.CHILDREN_LOADED = "childrenLoaded";
 Tasks.PARENTS_LOADED = "parentsLoaded";
+Tasks.MAIN_TASK_CHANGING = "mainTaskChanging";
 
 Tasks.HOME = {
     "id": 0,
@@ -39,27 +40,25 @@ Tasks.loadTask = function(id, callback) {
 
 Tasks.taskLoaded = function(task) {
     Tasks._calculateProperties(task);
-    Tasks._tasks[task.id] = task;
-    $(Tasks).trigger(Tasks.TASK_UPDATED, task);
 }
 
-Tasks.setBaseTask = function(id) {
+Tasks.setMainTask = function(id) {
     var task = {};
     this._tasks = {};
     this._task = {};
 
     if (id == 0) {
         Tasks._addMainTaskInTasks(this.HOME);
-        Tasks.loadChildren(this._task);
         Tasks.initParents();
+        Tasks.loadChildren();
         Tasks.taskLoaded(this._task);
     } else {
         Tasks.loadTask(id, function(task) {
                 Tasks._addMainTaskInTasks(task);
-                Tasks.loadChildren();
                 Tasks.initParents();
         })
     }
+    $(Tasks).trigger(Tasks.MAIN_TASK_CHANGING);
 };
 
 var index = 0;
@@ -75,8 +74,14 @@ Tasks._addMainTaskInTasks = function(task) {
 Tasks._calculateProperties = function(task) {
     index ++;
     task.strippedDescription = $("<div>").html(task.description).text();
-    task.toolbar = false;
+    task.toolbar = true;
     task.index = index;
+    task.hasChildren = false;
+
+    // parent_id
+    if (typeof task.parentId == 'undefined' && task.id != 0) {
+        task.parentId = 0;
+    }
 
     // level
     if (typeof task.level == 'undefined') {
@@ -89,11 +94,11 @@ Tasks._calculateProperties = function(task) {
     }
 
     // hasChildren
+    if (typeof task.nbChilds == 'undefined' && typeof task.children != 'undefined') {
+        task.nbChilds = task.children.length;
+    }
     if (parseInt(task.nbChilds) > 0) {
         task.hasChildren = true;
-        task.toolbar = true;
-    } else {
-        task.hasChildren = false;
     }
 
     // more
@@ -104,6 +109,13 @@ Tasks._calculateProperties = function(task) {
     if (typeof task.children != 'undefined' && parseInt(task.nbChilds) > task.children.length) {
         task.more = true;
     }
+
+    if (task.id === Tasks.getMainTask().id) {
+        task.toolbar = false;
+    }
+
+    Tasks._tasks[task.id] = task;
+    $(Tasks).trigger(Tasks.TASK_UPDATED, task);
 }
 
 Tasks.hasTask = function(id) {
@@ -175,6 +187,78 @@ Tasks.updateTitle = function(id, title) {
     $(this).trigger(Tasks.TASK_UPDATED, task);
 }
 
+Tasks.updateRank = function(task, nextTask) {
+    if (task.parentId != nextTask.parentId) {
+        alert('WTF');
+    }
+    console.log("rank:" + task.rank);
+    console.log("next rank:" + nextTask.rank);
+
+    var tasksSortByRank = _.sortBy(this._tasks[task.parentId].children, function(task) {return task.rank});
+
+    if(task.rank < nextTask.rank) {
+        console.log('cas 1');
+        var indexOfTask = 0;
+        for (var i = 0 ; i < tasksSortByRank.length ; i ++) {
+            if (tasksSortByRank[i].id == task.id) {
+                indexOfTask = i;
+                break;
+            }
+        }
+        Tasks.setRank(task, nextTask.rank);
+
+        for (var i = indexOfTask ; i < tasksSortByRank.length ; i ++) {
+            if (tasksSortByRank[i].id == nextTask.id) {
+                break;
+            }
+            Tasks.setRank(tasksSortByRank[i+1], tasksSortByRank[i+1].rank - 1);
+        }
+
+    } else {
+        var indexOfNextTask = 0;
+        for (var i = 0 ; i < tasksSortByRank.length ; i ++) {
+            if (tasksSortByRank[i].id == nextTask.id) {
+                indexOfNextTask = i;
+                break;
+            }
+        }
+        Tasks.setRank(task, nextTask.rank);
+        for (var i = indexOfNextTask ; i < tasksSortByRank.length ; i ++) {
+            if (tasksSortByRank[i].id == task.id) {
+                break;
+            }
+            Tasks.setRank(tasksSortByRank[i], tasksSortByRank[i].rank + 1);
+        }
+    }
+    $(this).trigger(Tasks.TASK_UPDATED, task);
+
+
+    var data = {
+        'rank' : task.rank
+    }
+
+    $.ajax({
+        url: "/rest/tasks/" + task.id,
+        type: 'PATCH',
+        success: function(data) {
+            console.info('PATCH ok');
+        },
+        error: function(e) {
+            console.info('PATCH ko');
+        },
+        data : JSON.stringify(data),
+        dataType: "json"
+    });
+
+
+    $(this).trigger(Tasks.TASK_UPDATED, task);
+}
+
+Tasks.setRank = function(task, rank) {
+    console.log(task.rank + ' -> ' + rank);
+    task.rank = rank;
+}
+
 /************
 * PARENTS
 * **********/
@@ -190,6 +274,7 @@ Tasks.initParents = function(task) {
     }
     if (task.id == 0) {
         Tasks._parents = {};
+        $(Tasks).trigger(Tasks.PARENTS_LOADED);
     } else {
         $.ajax({
             url: "/rest/tasks/" + task.id + "/breadcrumb",
@@ -198,7 +283,10 @@ Tasks.initParents = function(task) {
                 for (var i = 0 ; i < data.length ; i ++) {
                     Tasks._parents.push(data[i].data);
                 };
-                Tasks._parents.push(Tasks.HOME);
+                if (Tasks.getMainTask().id != 0) {
+                    Tasks._parents.push(Tasks.HOME);
+                }
+                $(Tasks).trigger(Tasks.PARENTS_LOADED);
             },
             error: function(e) {
                 console.log(e);
@@ -206,6 +294,7 @@ Tasks.initParents = function(task) {
             dataType: "json"
         });
     }
+
 }
 
 
@@ -239,7 +328,12 @@ Tasks.loadChildren = function(task, more) {
         success: function(data) {
             var children = [];
             for ( var i = 0 ; i < data.data.length ; i ++) {
-                children.push(data.data[i].data);
+                var child = data.data[i].data;
+                console.log(child.rank);
+                children.push(child);
+                if (child.parentId == null) {
+                    child.parentId = 0;
+                }
             }
             Tasks.addChildren(task, children);
             Tasks._calculateProperties(task);
@@ -259,7 +353,6 @@ Tasks.addChildren = function(task, children) {
         var task = children[i];
         task.level = level;
         Tasks._calculateProperties(task);
-        Tasks._tasks[task.id] = task;
 
         if (typeof task.children != 'undefined') {
             Tasks.addChildren(task, task.children);

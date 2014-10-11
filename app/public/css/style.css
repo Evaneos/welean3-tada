@@ -3,6 +3,7 @@ body {
     color: #444;
     font-family: Georgia, Times, serif;
     overflow-y: scroll;
+    margin: 0px;
 }
 
 .content {
@@ -14,6 +15,8 @@ body {
     margin-left: auto;
     margin-right: auto;
     padding-bottom: 100px;
+    margin-bottom: -5px;
+    margin-top: 5px;
     border-radius: 5px;
     border: solid 1px #d2d2d2;
     min-height: 800px;
@@ -42,7 +45,7 @@ body {
 
 .bc-item::after {
     position: absolute;
-    right: -10px;
+    right: -14px;
     content: " > ";
     color: #ddd;
     text-decoration: none;
@@ -54,7 +57,7 @@ body {
 
 .new.fixed {
     position: fixed;
-    bottom: 15px;
+    bottom: 0px;
     width: 700px;
     background-color: white;
     border-top: solid 1px #ddd;
@@ -70,38 +73,47 @@ body {
     padding-left: 40px;
 }
 
-.task .plus {
+.toolbar-item  {
     cursor: pointer;
 }
 
-.task .plus::before, .task .fa-chain {
+.toolbar {
     position: absolute;
-    content:"+";
     opacity: 1;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    padding: 0px 0px;
-    margin: 2px;
-    color: #ddd;
+    width: 70px;
     text-align: center;
-    font-size: 13px;
+    font-size: 80%;
+    left: -40px;
+}
+
+.task .plus::before, .task .fa-chain {
+    content:"+";
 }
 
 .task .plus::before {
     left: 20px;
 }
 
-.task .fa-chain, .level1 .fa-chain {
-    display: none;
+.toolbar-item {
+    float:right;
     left: 0px;
     top: 2px;
-    font-size: 70%;
     color: #ddd;
+    margin-left: 3px;
+    padding: 0px 0px;
+    margin: 2px;
+    display: inline-block;
+    width: 16px;
+    text-decoration: none;
 }
 
-.fa-chain:hover {
+.toolbar-item:hover, .plus:hover::before {
     color:#444;
+    height: 16px;
+}
+
+.fa-chain {
+    display: none;
 }
 
 .task .plus.open::before {
@@ -109,14 +121,8 @@ body {
 
 }
 
-.task .plus:hover::before {
-    background-color: #ddd;
-    color: white;
-}
-
 .task:hover .fa-chain {
     display: block;
-    text-decoration: none;
 }
 
 .description {
@@ -140,16 +146,13 @@ body {
 .level {
     margin-left: -20px;
     padding-left: 40px;
+    background-color: white;
 }
 
 .level1 {
     font-size: 25px;
     padding: 10px 0 0px 0;
     margin: 0px;
-}
-
-.level1 > .task > .plus {
-    display: none;
 }
 
 .level2 {

@@ -30,7 +30,7 @@ $( document ).ready(function() {
 });
 
 function init(id) {
-    Tasks.setBaseTask(id);
+    Tasks.setMainTask(id);
 }
 
 TaskMediator.onHashChange = function(event) {
