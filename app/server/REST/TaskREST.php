@@ -4,6 +4,7 @@ namespace Tada\REST;
 
 use Tada\Model\Task;
 use Pyrite\PyRest\PyRestCollection;
+use Pyrite\PyRest\PyRestProperty;
 
 class TaskREST extends \Pyrite\PyRest\PyRestObject
 {
@@ -12,7 +13,8 @@ class TaskREST extends \Pyrite\PyRest\PyRestObject
     protected static function initEmbeddables()
     {
         return array(
-            'childs' => new PyRestCollection('tasks')
+            'childs' => new PyRestCollection('tasks'),
+            'nbChilds' => new PyRestProperty()
         );
     }
 

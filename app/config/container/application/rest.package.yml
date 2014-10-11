@@ -9,6 +9,7 @@ classes :
         call :
             setContainer : [ $container ]
             setResourceName : [ 'tasks' ]
+            setService : [ @Berthe-tasks-Service ]
 
     Berthe-tasks-FetcherBuilder:
         class : \Tada\FetcherBuilder\TaskFetcherBuilder
