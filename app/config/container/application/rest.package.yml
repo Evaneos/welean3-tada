@@ -36,7 +36,7 @@ classes :
             setResourceName : [ 'tagcategories' ]
 
     Berthe-tags-Fetcher :
-        class: \Tada\Model\TagFetcher
+        class: \Tada\Fetcher\TagFetcher
 
     Berthe-tasks-Manager :
         class : \Tada\Manager\TaskManager

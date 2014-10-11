@@ -3,8 +3,7 @@
 namespace Tada\Service;
 
 use Berthe\BaseService;
-use Tada\Model\TagFetcher;
-use Tada\Service\TagCategoryService;
+use Tada\Fetcher\TagFetcher;
 use Tada\Model\Tag;
 
 class TagService extends BaseService

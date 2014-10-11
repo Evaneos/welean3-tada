@@ -110,10 +110,9 @@ class TaskService extends BaseService
             $this->taskHasTagService->delete($taskHasTag);
         }
 
-        var_dump($this->taskHasTagService->createNew(array(
+        return $this->taskHasTagService->createNew(array(
             'task_id' => $task->getId(),
             'tag_id' => $tag->getId()
-        )));
-        die;
+        ));
     }
 }
