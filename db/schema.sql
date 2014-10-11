@@ -3,7 +3,7 @@ $body$
 declare
 begin
 
-IF NOT EXISTS(SELECT * FROM  information_schema.tables WHERE table_name='task' AND table_schema='public')
+IF NOT EXISTS (SELECT * FROM information_schema.tables WHERE table_name='task' AND table_schema='public')
 THEN
     CREATE TABLE task (
         id                serial NOT NULL,
@@ -15,6 +15,38 @@ THEN
 
         CONSTRAINT pk_task PRIMARY KEY (id),
         CONSTRAINT fk_parent_id FOREIGN KEY (parent_id) REFERENCES task(id)
+    )
+    WITH (
+        OIDS=FALSE
+    );
+
+    CREATE index i_task_parent on task USING btree(parent_id);
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.tables WHERE table_name='tag_category' AND table_schema='public')
+THEN
+    CREATE TABLE tag_category (
+        id                serial NOT NULL,
+        created_at        timestamp(0) without time zone NOT NULL DEFAULT now(),
+        title             varchar(255) NOT NULL,
+
+        CONSTRAINT pk_tagcategory PRIMARY KEY (id)
+    )
+    WITH (
+        OIDS=FALSE
+    );
+END IF;
+
+IF NOT EXISTS (SELECT * FROM information_schema.tables WHERE table_name='tag' AND table_schema='public')
+THEN
+    CREATE TABLE tag (
+        id                serial NOT NULL,
+        created_at        timestamp(0) without time zone NOT NULL DEFAULT now(),
+        title             varchar(255) NOT NULL,
+        category_id       INT NOT NULL,
+
+        CONSTRAINT pk_tag PRIMARY KEY (id),
+        CONSTRAINT fk_category_id FOREIGN KEY (category_id) REFERENCES tag_category(id)
     )
     WITH (
         OIDS=FALSE
