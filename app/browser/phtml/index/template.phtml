@@ -1,19 +1,31 @@
 
 
 <script id="leveln" type="text/x-handlebars-template">
-    <div class='level level{{level}} parent-id-{{parent_id}}'>
+    <div class='level level{{level}} parent-id-{{parentId}}'>
         {{>task}}
+        {{#if hasChildren}}
+        <div class='insert-children-here'></div>
+        <div data-link-id="{{id}}" style="display:none" class='level level{{plusone level}} parent-id-{{id}} more to-be-removed-{{id}}'>
+            <div class="task ">
+                <span class='title'>
+                    <span class='editable'>loading...</span>
+                </span>
+            </div>
+        </div>
+        {{/if}}
     </div>
 </script>
 <script id="partial-task" type="text/x-handlebars-template">
     <div id="tada-{{id}}" class="task ">
-        <span class="{{#ifel children}}plus{{/ifel}}"></span>
+        {{#if toolbar}}
+        <a href="#{{id}}" class="fa fa-chain"></a>
+        <span class="plus"></span>
+        {{/if}}
         <span class='title'>
             <span class='editable'>{{title}}</span>
-            <a href="#{{id}}" class="fa fa-chain"></a>
             <input class='inputInherit mousetrap' type="text" value="{{title}}"/>
         </span>
-        <span class='description'>{{description}}</span>
+        <span class='description'>{{strippedDescription}}</span>
     </div>
 </script>
 <script id="breadcrumb-item" type="text/x-handlebars-template">

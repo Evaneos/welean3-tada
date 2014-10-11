@@ -5,11 +5,11 @@ $( document ).ready(function() {
     // Compile template
     TaskMediator.compileTemplate();
 
+    TaskMediator.init();
+    BreadcrumbMediator.init();
+
     window.onhashchange = TaskMediator.onHashChange;
     TaskMediator.onHashChange();
-
-    TaskMediator.init();
-    TaskMediator.initEvents();
 
     var socket = io(SOCKET_HOST);
 
@@ -21,13 +21,7 @@ $( document ).ready(function() {
         else if (data.type == "update") {
             console.info('object updated', data);
 
-            var res = Tasks.hasTask(id);
-            if(res) {
-                Tasks.loadTask(id, function(data) {
-                    Tasks._tasks[data.data.id] = data.data;
-                    $(Tasks).trigger("update", data.data);
-                });
-            }
+            Tasks.loadTask(id);
         }
         else {
             console.info('unknown message', data);
@@ -36,11 +30,11 @@ $( document ).ready(function() {
 });
 
 function init(id) {
-    Tasks.setBaseTask(id, TaskMediator.initData);
-    Tasks.initBreadcrumb(id, TaskMediator.setBreadcrumb);
+    Tasks.setBaseTask(id);
 }
 
 TaskMediator.onHashChange = function(event) {
+    $(".levels").html("");
     var id = parseInt(window.location.hash.replace ( /[^\d.]/g, '' ));
     init(isNaN(id) ? 0 : id);
 }
