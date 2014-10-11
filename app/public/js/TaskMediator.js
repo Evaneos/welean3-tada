@@ -4,44 +4,9 @@ TaskMediator.templates = {};
 
 
 
-TaskMediator.renderTask = function(task) {
-
-    // Add it or replace DOM?
-    var actualDom = TaskMediator.getDomFromId(task.id);
-
-    if (typeof actualDom != 'undefined' && actualDom.length != 0) {
-        var dom = $(TaskMediator.templates["task"](task));
-
-        dom.insertAfter(actualDom);
-        actualDom.remove();
-
-    } else {
-
-        // create dom
-        var dom = $(TaskMediator.templates["leveln"](task));
-
-        var parentDom = TaskMediator.getDomFromId(task.parentId);
-        if (typeof parentDom == 'undefined' || parentDom.length == 0 ) {
-            parentDom = $('.levels');
-            dom.appendTo(parentDom);
-        } else {
-            dom.insertAfter(parentDom);
-        }
-    }
-}
-
-TaskMediator.getTemplateName = function(n) {
-    return "leveln";
-}
-
-TaskMediator.getDomFromId = function(id) {
-    return $("#tada-"+id);
-}
-
 TaskMediator.init = function() {
 
     Handlebars.registerHelper('ifel', function(conditional, options) {
-      console.log(conditional);
       if(Object.prototype.toString.call( conditional ) === '[object Array]' && conditional.length > 0) {
         console.log('ok');
         return options.fn(this);
@@ -51,6 +16,27 @@ TaskMediator.init = function() {
       return conditional + 1;
     });
     Handlebars.registerPartial("task", $("#partial-task").html());
+
+    TaskMediator.initEvents();
+}
+
+TaskMediator.initEvents = function(event) {
+    $(document).on("click",".plus", TaskMediator.onClickPlus);
+
+    $(document).on("dblclick",".title", TaskMediator.onDblclickTitle);
+
+    $(document).on('keyup', 'input[type="text"]',TaskMediator.resizeInput);
+
+    $(document).on("inview", '.more:visible',  function(event, isInView) {
+        if (isInView) {
+            var id = parseInt($(this).attr('data-link-id'));
+            Tasks.loadChildren(Tasks.hasTask(id), true);
+        }
+    });
+
+    $(Tasks).on(Tasks.TASK_UPDATED, TaskMediator.onUpdate);
+
+    $(Tasks).on(Tasks.CHILDREN_LOADED, TaskMediator.onChildrenLoaded);
 }
 
 TaskMediator.initData = function() {
@@ -68,6 +54,40 @@ TaskMediator.initData = function() {
     $(".level2").show();
 }
 
+TaskMediator.renderTask = function(task) {
+
+    // Add it or replace DOM?
+    var actualDom = TaskMediator.getDomFromId(task.id);
+
+    if (typeof actualDom != 'undefined' && actualDom.length != 0) {
+        var dom = $(TaskMediator.templates["task"](task));
+
+        dom.insertAfter(actualDom);
+        actualDom.remove();
+
+    } else {
+
+        // create dom
+        var dom = $(TaskMediator.templates["leveln"](task));
+
+        var insertBeforeDom = TaskMediator.getDomFromId(task.parentId).siblings(".insert-children-here");
+        if (typeof insertBeforeDom == 'undefined' || insertBeforeDom.length == 0 ) {
+            var parentDom = $('.levels');
+            dom.appendTo(parentDom);
+        } else {
+            dom.insertBefore(insertBeforeDom);
+        }
+    }
+}
+
+TaskMediator.getTemplateName = function(n) {
+    return "leveln";
+}
+
+TaskMediator.getDomFromId = function(id) {
+    return $("#tada-"+id);
+}
+
 TaskMediator.compileTemplate = function() {
     TaskMediator.templates.leveln = TaskMediator.compileTemplateName('leveln');
     TaskMediator.templates.task = TaskMediator.compileTemplateName('partial-task');
@@ -77,26 +97,21 @@ TaskMediator.compileTemplateName = function(name) {
     return Handlebars.compile($("#"+name).html());
 }
 
-TaskMediator.initEvents = function(event) {
-    $(document).on("click",".plus", TaskMediator.onClickPlus);
-
-    $(document).on("dblclick",".title", TaskMediator.onDblclickTitle);
-
-    $(document).on('keyup', 'input[type="text"]',TaskMediator.resizeInput);
-
-    $(Tasks).on(Tasks.TASK_UPDATED, TaskMediator.onUpdate);
-
-    $(Tasks).on(Tasks.CHILDREN_LOADED, TaskMediator.onChildrenLoaded);
-}
-
 TaskMediator.onUpdate = function(event, task) {
     TaskMediator.renderTask(task);
 }
 
 TaskMediator.onChildrenLoaded = function(event, task) {
-    $(".to-be-removed-" + task.id).hide();
+
+    if (! task.more) {
+        $(".to-be-removed-" + task.id).hide();
+    }
     for(var i = 0 ; i < task.children.length ; i ++) {
-        TaskMediator.renderTask(task.children[i]);
+        var child = task.children[i];
+        // check if task is not already rendered
+        if ($("#tada-" + child.id).length == 0) {
+            TaskMediator.renderTask(child);
+        }
     }
 }
 
@@ -121,7 +136,7 @@ TaskMediator.onDblclickTitle = function(e) {
     input.on('blur', function(event) {
         Mousetrap.unbind('enter');
         $(el).removeClass('edit');
-        var id = TaskMediator.getIdFromDomId($(this).parents('.task').attr('id'));
+        var id = TaskMediator.getIdFromDom(this);
         Tasks.updateTitle(parseInt(id), input.val());
     });
     return false;
@@ -129,7 +144,7 @@ TaskMediator.onDblclickTitle = function(e) {
 }
 
 TaskMediator.onClickPlus = function(event) {
-    var currentId = parseInt(TaskMediator.getIdFromDomId($(this).parents('.task').attr('id')));
+    var currentId = parseInt(TaskMediator.getIdFromDom(this));
     if ($(this).hasClass('open')) {
         $(".parent-id-"+currentId).slideUp(200);
         $(this).removeClass('open');
@@ -137,9 +152,8 @@ TaskMediator.onClickPlus = function(event) {
         $(".parent-id-"+currentId).slideDown(200);
         $(this).addClass('open');
     }
-    Tasks.loadChildren(currentId);
 }
 
-TaskMediator.getIdFromDomId = function(domId) {
-    return domId.replace ( /[^\d.]/g, '' );
+TaskMediator.getIdFromDom = function(dom) {
+    return $(dom).parents('.task').attr('id').replace ( /[^\d.]/g, '' );
 }

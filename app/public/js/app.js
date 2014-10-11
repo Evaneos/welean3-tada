@@ -5,13 +5,11 @@ $( document ).ready(function() {
     // Compile template
     TaskMediator.compileTemplate();
 
+    TaskMediator.init();
+    BreadcrumbMediator.init();
+
     window.onhashchange = TaskMediator.onHashChange;
     TaskMediator.onHashChange();
-
-    TaskMediator.init();
-    TaskMediator.initEvents();
-
-    BreadcrumbMediator.init();
 
     var socket = io(SOCKET_HOST);
 
@@ -32,8 +30,7 @@ $( document ).ready(function() {
 });
 
 function init(id) {
-    Tasks.setBaseTask(id, TaskMediator.initData);
-    Tasks.initBreadcrumb(id, BreadcrumbMediator.setBreadcrumb);
+    Tasks.setBaseTask(id);
 }
 
 TaskMediator.onHashChange = function(event) {
