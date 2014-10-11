@@ -2,6 +2,7 @@
 
 namespace Tada\REST;
 
+use Pyrite\PyRest\PyRestItem;
 use Tada\Model\Task;
 use Pyrite\PyRest\PyRestCollection;
 use Pyrite\PyRest\PyRestProperty;
@@ -15,7 +16,7 @@ class TaskREST extends \Pyrite\PyRest\PyRestObject
         return array(
             'childs' => new PyRestCollection('tasks'),
             'nbChilds' => new PyRestProperty(),
-            'state' => new PyRestProperty(),
+            'state' => new PyRestItem('tags'),
         );
     }
 
