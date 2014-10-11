@@ -45,5 +45,15 @@ routes:
                 OutputLayer:  [ ]
                 Executor: [ TaskBreadcrumbController ]
 
+    update-state:
+        route:
+            pattern: "/rest/tasks/{id}/state"
+            methods: [ post, put ]
+        dispatch:
+            PyriteSessionFactory: { 'start': true }
+            PyriteApplicationFactory:
+                ApiLayer : []
+                Executor: [ TaskUpdateStateController ]
+
 include:
     - rest.yml

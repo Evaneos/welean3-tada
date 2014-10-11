@@ -25,3 +25,8 @@ classes :
             setTaskService : [ @Berthe-tasks-Service ]
             setBuilder : [ @Berthe-tasks-RESTBuilder ]
             setSerializer : [ @EmbedSerializer ]
+
+    TaskUpdateStateController :
+        class : \Tada\Controller\TaskUpdateStateController
+        call :
+            setTaskService : [ @Berthe-tasks-Service ]
