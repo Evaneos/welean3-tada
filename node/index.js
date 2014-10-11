@@ -1,3 +1,8 @@
+var args = require('cli.args')(['socketport:', 'internport:']);
+
+var socketport = args.socketport ? parseInt(args.socketport) : 3000;
+var internport = args.socketport ? parseInt(args.internport) : 3001;
+
 // SERVING SOCKET TO CLIENT
 var app = require('express')();
 var http = require('http').Server(app);
@@ -9,8 +14,8 @@ var sockets = {};
 
 
 
-http.listen(3000, function(){
-  console.log('listening on *:3000');
+http.listen(socketport, function(){
+  console.log('listening on *:' + socketport);
 });
 
 io.on('connection', function(socket){
@@ -52,6 +57,6 @@ appInternal.post('/notification', function(req, res){
 
 
 
-httpInternal.listen(3001, '127.0.0.1', function() {
-    console.log('listening on 127.0.0.1:3001');
+httpInternal.listen(internport, '127.0.0.1', function() {
+    console.log('listening on 127.0.0.1:' + internport);
 });
