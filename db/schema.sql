@@ -53,6 +53,24 @@ THEN
     );
 END IF;
 
+IF NOT EXISTS (SELECT * FROM information_schema.tables WHERE table_name='task_has_tag' AND table_schema='public')
+THEN
+    CREATE TABLE task_has_tag (
+        id                serial NOT NULL,
+        created_at        timestamp(0) without time zone NOT NULL DEFAULT now(),
+        task_id           INT NOT NULL,
+        tag_id            INT NOT NULL,
+
+        CONSTRAINT pk_task_has_tag PRIMARY KEY (id),
+        CONSTRAINT fk_task_id FOREIGN KEY (task_id) REFERENCES task(id),
+        CONSTRAINT fk_tag_id FOREIGN KEY (tag_id) REFERENCES tag(id),
+        CONSTRAINT u_task_has_tag UNIQUE (task_id, tag_id)
+    )
+    WITH (
+        OIDS=FALSE
+    );
+END IF;
+
 CREATE OR REPLACE FUNCTION create_task (input_title text, input_description text) RETURNS int AS $$
 BEGIN
     INSERT INTO task (title, description) VALUES (input_title, input_description);

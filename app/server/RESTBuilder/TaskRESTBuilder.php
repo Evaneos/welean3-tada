@@ -3,15 +3,25 @@
 namespace Tada\RESTBuilder;
 
 use Tada\Fetcher\TaskFetcher;
+use Tada\Model\TagCategory;
 use Tada\Model\TagCategoryFetcher;
+use Tada\Model\TagFetcher;
+use Tada\Model\Task;
+use Tada\Model\TaskHasTag;
+use Tada\Model\TaskHasTagFetcher;
+use Tada\REST\TaskREST;
+use Tada\Service\TagService;
 
 class TaskRESTBuilder extends BaseBertheBuilder
 {
     /** @var \Berthe\Service */
     protected $service;
 
+    /** @var TagService */
+    protected $tagService;
+
     /** @var \Berthe\Service */
-    protected $tagCategoryService;
+    protected $taskHasTagService;
 
     /**
      * @param \Berthe\Service $service
@@ -22,11 +32,19 @@ class TaskRESTBuilder extends BaseBertheBuilder
     }
 
     /**
-     * @param \Berthe\Service $service
+     * @param \Berthe\Service $tagService
      */
-    public function setTagCategoryService($service)
+    public function setTagService($tagService)
     {
-        $this->tagCategoryService = $service;
+        $this->tagService = $tagService;
+    }
+
+    /**
+     * @param \Berthe\Service $taskHasTagService
+     */
+    public function setTaskHasTagService($taskHasTagService)
+    {
+        $this->taskHasTagService = $taskHasTagService;
     }
 
     protected function joinChild(array $tasks = array(), array $tasksREST = array(), array $embeds = array())
@@ -55,28 +73,49 @@ class TaskRESTBuilder extends BaseBertheBuilder
         return $tasksREST;
     }
 
+    /**
+     * @param Task[] $tasks
+     * @param TaskREST[] $tasksREST
+     * @param array $embeds
+     * @return TaskREST[]
+     */
     protected function joinState(array $tasks = array(), array $tasksREST = array(), array $embeds = array())
     {
-        $ids = array();
+        $tasksIds = array();
         foreach($tasks as $task) {
-            $ids[$task->getId()] = 0;
+            $tasksIds[] = $task->getId();
         }
 
-        //@todo this bloc is berk, sorry, we don't know exactly what we want to do with tags, state, etc.
-        $fetcher = new TagCategoryFetcher(-1,-1);
-        $fetcher->filterByTitle('state');
-        $result = $this->tagCategoryService->getByFetcher($fetcher)->getResultSet();
-        $tagCategory = reset($result);
-
-        var_dump($tagCategory); die;
-
-
-        foreach($resultSet as $task) {
-            $ids[$task->getParentId()] += 1;
+        /**
+         * 1st, get list of tags for the 'state' tagCategory
+         */
+        $tagsIds = array();
+        $tags = $this->tagService->getTagsByCategoryTitle('state');
+        foreach($tags as $tag) {
+            $tagsIds[] = $tag->getId();
         }
 
-        foreach($tasks as $key => $task) {
-            $tasksREST[$key]->setEmbed('state', new \Pyrite\PyRest\PyRestObjectPrimitive($ids[$task->getId()]));
+        /**
+         * Then, get list of task_has_tag
+         */
+        $fetcher = new TaskHasTagFetcher(-1,-1);
+        $fetcher->filterByTaskIds($tasksIds);
+        $fetcher->filterByTagIds($tagsIds);
+        $resultSet = $this->taskHasTagService->getByFetcher($fetcher)->getResultSet();
+
+        /** @var TaskHasTag $taskHasTag */
+        $taskTags = array();
+        foreach($resultSet as $taskHasTag) {
+            $taskTags[$taskHasTag->getTaskId()] = $taskHasTag->getTagId();
+        }
+
+
+        foreach($tasks as $task) {
+            if (array_key_exists($task->getId(), $taskTags)) {
+                $tasksREST[$task->getId()]->setEmbed('state', new \Pyrite\PyRest\PyRestObjectPrimitive($tags[$taskTags[$task->getId()]]->getTitle()));
+            } else {
+                $tasksREST[$task->getId()]->setEmbed('state', new \Pyrite\PyRest\PyRestObjectPrimitive(null));
+            }
         }
 
         return $tasksREST;
