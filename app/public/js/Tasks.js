@@ -20,13 +20,16 @@ Tasks.HOME = {
 
 
 
-Tasks.loadTask = function(id) {
+Tasks.loadTask = function(id, callback) {
     var task = {};
 
-    url = "/rest/tasks/"+id;
+    url = "/rest/tasks/"+id+"?embed=nbChilds";
     $.ajax({
-        url: "/rest/tasks/"+id,
-        success: Tasks.taskLoaded,
+        url: url,
+        success: function(data) {
+            if (typeof callback != 'undefined') { callback(data.data); }
+            Tasks.taskLoaded(data.data);
+        },
         error: function(e) {
             console.log(e);
         },
@@ -34,10 +37,10 @@ Tasks.loadTask = function(id) {
     });
 };
 
-Tasks.taskLoaded = function(data) {
-    Tasks._calculateProperties(data.data);
-    Tasks._tasks[data.data.id] = data.data;
-    $(Tasks).trigger(Tasks.TASK_UPDATED, data.data);
+Tasks.taskLoaded = function(task) {
+    Tasks._calculateProperties(task);
+    Tasks._tasks[task.id] = task;
+    $(Tasks).trigger(Tasks.TASK_UPDATED, task);
 }
 
 Tasks.setBaseTask = function(id) {
@@ -49,22 +52,13 @@ Tasks.setBaseTask = function(id) {
         Tasks._addMainTaskInTasks(this.HOME);
         Tasks.loadChildren(this._task);
         Tasks.initParents();
-        Tasks.taskLoaded({data: this._task});
+        Tasks.taskLoaded(this._task);
     } else {
-        url = "/rest/tasks/"+id+"&number=" + number;
-        $.ajax({
-            url: "/rest/tasks/"+id,
-            success: function(data) {
-                Tasks._addMainTaskInTasks(data.data);
+        Tasks.loadTask(id, function(task) {
+                Tasks._addMainTaskInTasks(task);
                 Tasks.loadChildren();
                 Tasks.initParents();
-                Tasks.taskLoaded(data);
-            },
-            error: function(e) {
-                console.log(e);
-            },
-            dataType: "json"
-        });
+        })
     }
 };
 
@@ -72,12 +66,9 @@ var index = 0;
 Tasks._addMainTaskInTasks = function(task) {
     index = 0;
     this._task = task;
-    Tasks._calculateProperties(task);
     task.level = 1;
     task.toolbar = false;
     task.hasChildren = false;
-    Tasks._tasks = {};
-    Tasks._tasks[task.id] = task;
 
 }
 
@@ -86,6 +77,17 @@ Tasks._calculateProperties = function(task) {
     task.strippedDescription = $("<div>").html(task.description).text();
     task.toolbar = false;
     task.index = index;
+
+    // level
+    if (typeof task.level == 'undefined') {
+        var parent = Tasks.hasTask(task.parentId);
+        if (typeof parent != 'undefined') {
+            task.level = parent.level + 1;
+        } else if (Tasks._task.id == 0) {
+            task.level = 2;
+        }
+    }
+
     // hasChildren
     if (parseInt(task.nbChilds) > 0) {
         task.hasChildren = true;
@@ -95,11 +97,54 @@ Tasks._calculateProperties = function(task) {
     }
 
     // more
+    if (typeof task.children == 'undefined') {
+        task.children = [];
+    }
     task.more = false;
     if (typeof task.children != 'undefined' && parseInt(task.nbChilds) > task.children.length) {
         task.more = true;
     }
+}
 
+Tasks.hasTask = function(id) {
+    return _.findWhere(this._tasks, {"id":id});
+}
+
+Tasks.getAllTasks = function() {
+    return _.sortBy(Tasks._tasks, function(task) {
+        return task.index;
+    });
+}
+
+Tasks.getMainTask = function() {
+    return Tasks._task;
+}
+
+
+/************
+* UPDATE / CREATE
+* **********/
+
+Tasks.create = function(title, callback) {
+
+    var task = {
+        title: title,
+        parentId: (Tasks._task.id == 0 ) ? null : Tasks._task.id
+    }
+
+    $.ajax({
+        url: "/rest/tasks",
+        type: 'POST',
+        success: function(id) {
+            Tasks.loadTask(id);
+            if (typeof callback != 'undefined') { callback()};
+        },
+        error: function(e) {
+            console.info('POST ko');
+        },
+        data : JSON.stringify(task),
+        dataType: "json"
+    });
 }
 
 Tasks.updateTitle = function(id, title) {
@@ -128,16 +173,6 @@ Tasks.updateTitle = function(id, title) {
 
 
     $(this).trigger(Tasks.TASK_UPDATED, task);
-}
-
-Tasks.hasTask = function(id) {
-    return _.findWhere(this._tasks, {"id":id});
-}
-
-Tasks.getAllTasks = function() {
-    return _.sortBy(Tasks._tasks, function(task) {
-        return task.index;
-    });
 }
 
 /************
@@ -187,9 +222,7 @@ Tasks.loadChildren = function(task, more) {
 
     if (typeof task.childrenPage == 'undefined') {
         task.childrenPage = 1;
-    }
-
-    if (more) {
+    } else if (more) {
         task.childrenPage ++ ;
     }
 

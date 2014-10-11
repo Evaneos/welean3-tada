@@ -17,6 +17,9 @@ TaskMediator.init = function() {
     });
     Handlebars.registerPartial("task", $("#partial-task").html());
 
+    // create new task
+    TaskMediator.newTaskInit();
+
     TaskMediator.initEvents();
 }
 
@@ -37,21 +40,6 @@ TaskMediator.initEvents = function(event) {
     $(Tasks).on(Tasks.TASK_UPDATED, TaskMediator.onUpdate);
 
     $(Tasks).on(Tasks.CHILDREN_LOADED, TaskMediator.onChildrenLoaded);
-}
-
-TaskMediator.initData = function() {
-    // clean view
-    $(".levels").html("");
-
-    // render tasks
-    var tasks = Tasks.getAllTasks();
-    _.each(tasks, function(elem, index, list) {
-        TaskMediator.renderTask(elem);
-    });
-
-    $(".level").hide();
-    $(".level1").show();
-    $(".level2").show();
 }
 
 TaskMediator.renderTask = function(task) {
@@ -98,7 +86,11 @@ TaskMediator.compileTemplateName = function(name) {
 }
 
 TaskMediator.onUpdate = function(event, task) {
+    if (task.level == 1) {
+        $(".levels").html("");
+    }
     TaskMediator.renderTask(task);
+    $(".level1").children('.more').show();
 }
 
 TaskMediator.onChildrenLoaded = function(event, task) {
@@ -116,7 +108,17 @@ TaskMediator.onChildrenLoaded = function(event, task) {
 }
 
 TaskMediator.resizeInput = function() {
-    $(this).attr('size', $(this).val().length);
+    var size = $(this).val().length;
+    if (size > 30) {
+        $(this).attr('size', size);
+    } else {
+        $(this).attr('size', 30);
+    }
+
+    if (size > 75) {
+        alert('75 characters for a title? Are you serious? (And you know what? We even have gave you the possibility to continue in the description ;) )');
+        $(this).val($(this).val().substring(0,75));
+    }
 }
 
 TaskMediator.onDblclickTitle = function(e) {
@@ -138,6 +140,34 @@ TaskMediator.onDblclickTitle = function(e) {
         $(el).removeClass('edit');
         var id = TaskMediator.getIdFromDom(this);
         Tasks.updateTitle(parseInt(id), input.val());
+    });
+    return false;
+
+}
+
+TaskMediator.newTaskInit = function(task) {
+
+    // Add dom element
+    var dom = $(TaskMediator.templates["leveln"]({"title":"", "description":"", "id":"-1", "level": "2"}));
+    $(dom).appendTo($('.new'));
+
+    // Edit mode
+    var el = $(dom).find('.title');
+    $(el).addClass('edit');
+    var input = $(el).children("input");
+    TaskMediator.resizeInput.call(input);
+    Mousetrap.bind('enter', function() {
+        var mainTask = Tasks.getMainTask();
+        if (mainTask.nbChilds > mainTask.children.length) {
+            alert("we can't create a task if you haven't loaded every tasks!");
+        }
+        Tasks.create(input.val(), function() {
+            input.val("");
+        });
+        input.blur();
+    });
+    Mousetrap.bind('esc', function() {
+        input.blur();
     });
     return false;
 

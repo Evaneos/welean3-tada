@@ -19,8 +19,8 @@ class TaskBuilder extends AbstractBuilder
         if (array_key_exists('description', $data)) {
             $object->setDescription(trim($data['description']));
         }
-        if (array_key_exists('parent_id', $data)) {
-            $object->setParentId($data['parent_id']);
+        if (array_key_exists('parentId', $data)) {
+            $object->setParentId($data['parentId']);
         }
         return $object;
     }

@@ -5,6 +5,7 @@
         {{>task}}
         {{#if hasChildren}}
         <div class='insert-children-here'></div>
+        {{#if more}}
         <div data-link-id="{{id}}" style="display:none" class='level level{{plusone level}} parent-id-{{id}} more to-be-removed-{{id}}'>
             <div class="task ">
                 <span class='title'>
@@ -12,6 +13,7 @@
                 </span>
             </div>
         </div>
+        {{/if}}
         {{/if}}
     </div>
 </script>
@@ -23,7 +25,7 @@
         {{/if}}
         <span class='title'>
             <span class='editable'>{{title}}</span>
-            <input class='inputInherit mousetrap' type="text" value="{{title}}"/>
+            <input placeholder="Nouvelle tache" class='inputInherit mousetrap' type="text" value="{{title}}"/>
         </span>
         <span class='description'>{{strippedDescription}}</span>
     </div>
