@@ -14,11 +14,20 @@ $( document ).ready(function() {
     var socket = io(SOCKET_HOST);
 
     socket.on('object changed', function(data) {
+        var id = parseInt(data.data);
         if (data.type == "creation") {
-            console.info('object created', data.data);
+            console.info('object created', data);
         }
         else if (data.type == "update") {
-            console.info('object updated', data.data);
+            console.info('object updated', data);
+
+            var res = Tasks.hasTask(id);
+            if(res) {
+                Tasks.loadTask(id, function(data) {
+                    Tasks._tasks[data.data.id] = data.data;
+                    $(Tasks).trigger("update", data.data);
+                });
+            }
         }
         else {
             console.info('unknown message', data);
@@ -27,7 +36,7 @@ $( document ).ready(function() {
 });
 
 function init(id) {
-    Tasks.initTask(id, TaskMediator.initData);
+    Tasks.setBaseTask(id, TaskMediator.initData);
     Tasks.initBreadcrumb(id, TaskMediator.setBreadcrumb);
 }
 

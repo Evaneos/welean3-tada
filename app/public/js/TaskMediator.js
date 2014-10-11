@@ -56,9 +56,9 @@ TaskMediator.initData = function() {
 
     // render tasks
     var tasks = Tasks.getAllTasks();
-    for (var i = 0 ; i < tasks.length ; i++) {
-        TaskMediator.renderTask(tasks[i]);
-    }
+    _.each(tasks, function(elem, index, list) {
+        TaskMediator.renderTask(elem);
+    });
 
     $(".level").hide();
     $(".level1").show();

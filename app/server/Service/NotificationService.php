@@ -51,7 +51,7 @@ class NotificationService
     {
         $request = $this->client->post($this->endpoint, array(), array (
             'type' => 'creation',
-            'data' => json_encode($task)
+            'data' => (int)$task->getId()
         ));
         try {
             $this->client->send($request);
@@ -67,7 +67,7 @@ class NotificationService
     {
         $request = $this->client->post($this->endpoint, array(), array (
             'type' => 'update',
-            'data' => json_encode($task)
+            'data' => (int)$task->getId()
         ));
         try {
             $this->client->send($request);
