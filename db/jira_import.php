@@ -54,10 +54,13 @@ truncate table task;
 
 <?php
 
+$i=0;
+
 foreach ($tasks as $key => $task) {
-    printf ("PERFORM create_task ('%s', %s);\n",
+    printf ("PERFORM create_task ('%s', %s, %s);\n",
         str_replace("'", "''", $task['title']),
-        $task['description'] ? "'" . str_replace("'", "''", $task['description']) . "'" : 'NULL'
+        $task['description'] ? "'" . str_replace("'", "''", $task['description']) . "'" : 'NULL',
+        ++$i
     );
 }
 
