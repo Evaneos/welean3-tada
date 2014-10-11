@@ -46,6 +46,7 @@ classes :
             addSaveHook[1] : [ @UpdatedDateSaveHook ]
             addSaveHook[2] : [ @UpdateAllRankSaveHook ]
             addSaveHook[3] : [ @NotificationSaveHook ]
+            addSaveHook[4] : [ @StripDescriptionSaveHook ]
             setValidator : [ @Berthe-tasks-Validator ]
             setStorage : [ @Berthe-tasks-Storage ]
             setVOFQCN : [ '\Tada\Model\Task' ]

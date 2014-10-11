@@ -13,7 +13,7 @@ class TaskREST extends \Pyrite\PyRest\PyRestObject
 
     protected static function initEmbeddables()
     {
-        return array(
+        return array (
             'childs' => new PyRestCollection('tasks'),
             'nbChilds' => new PyRestProperty(),
             'state' => new PyRestItem('tags'),
@@ -25,7 +25,7 @@ class TaskREST extends \Pyrite\PyRest\PyRestObject
         $this->id = $task->getId();
         $this->title = $task->getTitle();
         $this->description = $task->getDescription();
-        $this->strippedDescription = strip_tags($task->getDescription());
+        $this->strippedDescription = $task->getStrippedDescription();
         $this->parentId = $task->getParentId();
         $this->updatedAt = ($task->getUpdatedAt() instanceof \DateTime) ? $task->getUpdatedAt()->format(\DateTime::ISO8601) : null;
         $this->createdAt = ($task->getCreatedAt() instanceof \DateTime) ? $task->getCreatedAt()->format(\DateTime::ISO8601) : null;
