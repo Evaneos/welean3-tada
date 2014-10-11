@@ -53,15 +53,16 @@ body {
 
 .task {
     position: relative;
+    margin-left: -40px;
+    padding-left: 40px;
 }
 
 .task .plus {
     cursor: pointer;
 }
 
-.task .plus::before {
+.task .plus::before, .task .fa-chain {
     position: absolute;
-    left: -20px;
     content:"+";
     opacity: 1;
     width: 16px;
@@ -72,6 +73,22 @@ body {
     color: #ddd;
     text-align: center;
     font-size: 13px;
+}
+
+.task .plus::before {
+    left: 20px;
+}
+
+.task .fa-chain, .level1 .fa-chain {
+    display: none;
+    left: 0px;
+    top: 2px;
+    font-size: 70%;
+    color: #ddd;
+}
+
+.fa-chain:hover {
+    color:#444;
 }
 
 .task .plus.open::before {
@@ -85,21 +102,8 @@ body {
 }
 
 .task:hover .fa-chain {
-    display: inline-block;
-    margin-bottom: 4px;
+    display: block;
     text-decoration: none;
-}
-
-.fa-chain {
-    display: none;
-    font-size: 70%;
-    color: #ddd;
-    margin-left: 0.3em;
-    vertical-align: middle;
-}
-
-.fa-chain:hover {
-    color:#444;
 }
 
 .description {
@@ -120,6 +124,11 @@ body {
     max-width: 650px;
 }
 
+.level {
+    margin-left: -20px;
+    padding-left: 40px;
+}
+
 .level1 {
     font-size: 25px;
     padding: 10px 0 0px 0;
@@ -132,14 +141,14 @@ body {
 
 .level2 {
     font-size: 20px;
-    padding: 15px 0 2px 0;
-    margin-left: 20px;
+    padding-top: 15px;
+    padding-bottom: 2px;
 }
 
 .level3 {
     font-size: 15px;
-    padding: 4px 0px;
-    margin-left: 20px;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 .level3 .description {
@@ -148,8 +157,8 @@ body {
 
 .level4, .level5, .level6, .level7 {
     font-size: 13px;
-    padding: 2px 0px;
-    margin-left: 20px;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 .level4 .description, .level5 .description, .level6 .description, .level7 .description {
@@ -165,7 +174,7 @@ body {
     border:solid 1px #ddd;
     border-width: 0 0 1px 0;
     font-family: inherit;
-    margin: -1px -1px -2px -1px;
+    margin: -1px -1px 2px -1px;
     outline: 0;
 
 }
