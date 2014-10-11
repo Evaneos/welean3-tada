@@ -39,17 +39,36 @@ classes :
         class: \Tada\Model\TagFetcher
 
     Berthe-tasks-Manager :
-        class : \Berthe\BaseManager
+        class : \Tada\Manager\TaskManager
+        singleton : true
         call :
             addSaveHook[0] : [ @CreatedDateSaveHook ]
             addSaveHook[1] : [ @UpdatedDateSaveHook ]
-            addSaveHook[2] : [ @NotificationSaveHook ]
+            addSaveHook[2] : [ @UpdateAllRankSaveHook ]
+            addSaveHook[3] : [ @NotificationSaveHook ]
             setValidator : [ @Berthe-tasks-Validator ]
             setStorage : [ @Berthe-tasks-Storage ]
             setVOFQCN : [ '\Tada\Model\Task' ]
 
+    Berthe-tasks-Storage :
+        class : \Tada\Storage\TaskStorage
+        call :
+            addStore[0] : [ @Berthe-tasks-PersistentStore ]
+
+    Berthe-tasks-PersistentStore :
+        class : \Tada\PersistentStore\TaskPersistentStore
+        call :
+            setReader : [ @Berthe-tasks-Reader ]
+            setWriter : [ @Berthe-tasks-Writer ]
+
+    Berthe-tasks-Writer :
+        class : \Tada\Writer\TaskWriter
+        call :
+            setDb : [ @DbWriter ]
+            setTableName : [ 'task' ]
+
     Berthe-tasks-Builder :
-        class : \Tada\Model\TaskBuilder
+        class : \Tada\Builder\TaskBuilder
 
     Berthe-tasks-Service :
         class: \Tada\Service\TaskService

@@ -5,7 +5,7 @@ namespace Tada\FetcherBuilder;
 use Pyrite\PyRest\PyRestConfiguration;
 use Pyrite\PyRest\Configuration\FilterParser;
 use Berthe\Fetcher;
-use Tada\Model\TagFetcher;
+use Tada\Fetcher\TagFetcher;
 
 class TagFetcherBuilder extends \EVFramework\Berthe\Fetcher\BaseFetcherBuilder
 {

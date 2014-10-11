@@ -1,6 +1,6 @@
 <?php
 
-namespace Tada\Model;
+namespace Tada\Fetcher;
 
 use Berthe\Fetcher;
 

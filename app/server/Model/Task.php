@@ -36,7 +36,24 @@ class Task extends \Berthe\AbstractVO
      * @var int parent_id
      */
     protected $parent_id;
-
+    /**
+     * @return int rank
+     */
+    protected $rank;
+    /**
+     * @return int rank
+     */
+    public function getRank() {
+        return $this->rank;
+    }
+    /**
+     * @param int $value
+     * @return Task
+     */
+    public function setRank($value) {
+        $this->rank = $value;
+        return $this;
+    }
     /**
      * @return \DateTime
      */

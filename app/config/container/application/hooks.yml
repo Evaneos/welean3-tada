@@ -6,3 +6,6 @@ classes :
     NotificationSaveHook :
         class : \Tada\Hook\NotificationSaveHook
         arguments : [ @NotificationService ]
+    UpdateAllRankSaveHook :
+        class : \Tada\Hook\UpdateAllRankSaveHook
+        arguments : [ @Berthe-tasks-Manager ]

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tada\Model;
+namespace Tada\Builder;
 
 use Berthe\AbstractBuilder;
 
@@ -21,6 +21,9 @@ class TaskBuilder extends AbstractBuilder
         }
         if (array_key_exists('parentId', $data)) {
             $object->setParentId($data['parentId']);
+        }
+        if (array_key_exists('rank', $data)) {
+            $object->setRank($data['rank']);
         }
         return $object;
     }

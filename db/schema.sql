@@ -12,6 +12,7 @@ THEN
         title             varchar(255) NOT NULL,
         description       text NULL,
         parent_id         int NULL,
+        rank              int NOT NULL
 
         CONSTRAINT pk_task PRIMARY KEY (id),
         CONSTRAINT fk_parent_id FOREIGN KEY (parent_id) REFERENCES task(id)
@@ -21,6 +22,7 @@ THEN
     );
 
     CREATE index i_task_parent on task USING btree(parent_id);
+    CREATE index i_rank on task USING btree(rank);
 END IF;
 
 IF NOT EXISTS (SELECT * FROM information_schema.tables WHERE table_name='tag_category' AND table_schema='public')
@@ -71,9 +73,9 @@ THEN
     );
 END IF;
 
-CREATE OR REPLACE FUNCTION create_task (input_title text, input_description text) RETURNS int AS $$
+CREATE OR REPLACE FUNCTION create_task (input_title text, input_description text, input_rank integer) RETURNS int AS $$
 BEGIN
-    INSERT INTO task (title, description) VALUES (input_title, input_description);
+    INSERT INTO task (title, description, rank) VALUES (input_title, input_description, input_rank);
     RETURN 0;
 END;
 $$ LANGUAGE plpgsql;
