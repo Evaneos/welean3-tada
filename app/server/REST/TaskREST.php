@@ -12,7 +12,7 @@ class TaskREST extends \Pyrite\PyRest\PyRestObject
     protected static function initEmbeddables()
     {
         return array(
-            'childs' => new PyRestCollection('tasks')
+            'childs' => new PyRestCollection('tasks'),
         );
     }
 
