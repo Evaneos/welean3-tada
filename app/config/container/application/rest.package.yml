@@ -2,6 +2,8 @@ parameters :
     crud :
         packages :
             tasks : { 'vo' : '\Tada\Model\Task', 'rest' : '\Tada\REST\TaskREST', 'table' : 'task' }
+            tags : { 'vo' : '\Tada\Model\Tag', 'rest' : '\Tada\REST\TagREST', 'table' : 'tag' }
+            tagcategories : { 'vo' : '\Tada\Model\TagCategory', 'rest' : '\Tada\REST\TagCategoryREST', 'table' : 'tag_category' }
 
 classes :
     Berthe-tasks-RESTBuilder :
@@ -9,9 +11,29 @@ classes :
         call :
             setContainer : [ $container ]
             setResourceName : [ 'tasks' ]
+            setService : [ @Berthe-tasks-Service ]
 
     Berthe-tasks-FetcherBuilder:
         class : \Tada\FetcherBuilder\TaskFetcherBuilder
+
+    Berthe-tags-FetcherBuilder:
+        class : \Tada\FetcherBuilder\TagFetcherBuilder
+
+    Berthe-tags-RESTBuilder :
+        class : \Tada\RESTBuilder\TagRESTBuilder
+        call :
+            setContainer : [ $container ]
+            setResourceName : [ 'tags' ]
+            setTagCategoryService : [ @Berthe-tagcategories-Service ]
+
+    Berthe-tagcategories-RESTBuilder :
+        class : \Tada\RESTBuilder\TagCategoryRESTBuilder
+        call :
+            setContainer : [ $container ]
+            setResourceName : [ 'tagcategories' ]
+
+    Berthe-tags-Fetcher :
+        class: \Tada\Model\TagFetcher
 
     Berthe-tasks-Manager :
         class : \Berthe\BaseManager

@@ -55,7 +55,7 @@ class BaseBertheBuilder
 
         foreach($embeds as $name => $embedArray) {
             if (array_key_exists($name, $embeddables)) {
-                if ($embeddables[$name] instanceof \Pyrite\PyRest\PyRestItem) {
+                if (($embeddables[$name] instanceof \Pyrite\PyRest\PyRestItem) || ($embeddables[$name] instanceof \Pyrite\PyRest\PyRestProperty)) {
                     $joinMethod = "join" . ucfirst($name);
                     if (method_exists($this, $joinMethod)) {
                         $this->$joinMethod($objects, $objectsREST, $embedArray);
