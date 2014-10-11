@@ -14,7 +14,8 @@ class TaskREST extends \Pyrite\PyRest\PyRestObject
     {
         return array(
             'childs' => new PyRestCollection('tasks'),
-            'nbChilds' => new PyRestProperty()
+            'nbChilds' => new PyRestProperty(),
+            'state' => new PyRestProperty(),
         );
     }
 

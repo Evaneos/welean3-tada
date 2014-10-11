@@ -12,6 +12,7 @@ classes :
             setContainer : [ $container ]
             setResourceName : [ 'tasks' ]
             setService : [ @Berthe-tasks-Service ]
+            setTagCategoryService : [ @Berthe-tagcategories-Service ]
 
     Berthe-tasks-FetcherBuilder:
         class : \Tada\FetcherBuilder\TaskFetcherBuilder
