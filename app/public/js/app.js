@@ -34,6 +34,7 @@ function init(id) {
 }
 
 TaskMediator.onHashChange = function(event) {
+    $(".levels").html("");
     var id = parseInt(window.location.hash.replace ( /[^\d.]/g, '' ));
     init(isNaN(id) ? 0 : id);
 }

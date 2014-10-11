@@ -6,8 +6,6 @@ TaskMediator.templates = {};
 
 TaskMediator.renderTask = function(task) {
 
-
-
     // Add it or replace DOM?
     var actualDom = TaskMediator.getDomFromId(task.id);
 
@@ -22,7 +20,7 @@ TaskMediator.renderTask = function(task) {
         // create dom
         var dom = $(TaskMediator.templates["leveln"](task));
 
-        var parentDom = TaskMediator.getDomFromId(task.parent_id);
+        var parentDom = TaskMediator.getDomFromId(task.parentId);
         if (typeof parentDom == 'undefined' || parentDom.length == 0 ) {
             parentDom = $('.levels');
             dom.appendTo(parentDom);
@@ -43,9 +41,21 @@ TaskMediator.getDomFromId = function(id) {
 TaskMediator.init = function() {
 
     Handlebars.registerHelper('ifel', function(conditional, options) {
+      console.log(conditional);
       if(Object.prototype.toString.call( conditional ) === '[object Array]' && conditional.length > 0) {
+        console.log('ok');
         return options.fn(this);
       }
+    });
+    Handlebars.registerHelper('ifno', function(conditional, options) {
+      if(Object.prototype.toString.call( conditional ) === '[object Array]' && conditional.length > 0) {
+
+      } else {
+        return options.fn(this);
+      }
+    });
+    Handlebars.registerHelper('plusone', function(conditional, options) {
+      return conditional + 1;
     });
     Handlebars.registerPartial("task", $("#partial-task").html());
 }
@@ -81,11 +91,20 @@ TaskMediator.initEvents = function(event) {
 
     $(document).on('keyup', 'input[type="text"]',TaskMediator.resizeInput);
 
-    $(Tasks).on('update', TaskMediator.onUpdate);
+    $(Tasks).on(Tasks.TASK_UPDATED, TaskMediator.onUpdate);
+
+    $(Tasks).on(Tasks.CHILDREN_LOADED, TaskMediator.onChildrenLoaded);
 }
 
 TaskMediator.onUpdate = function(event, task) {
     TaskMediator.renderTask(task);
+}
+
+TaskMediator.onChildrenLoaded = function(event, task) {
+    $(".to-be-removed-" + task.id).hide();
+    for(var i = 0 ; i < task.children.length ; i ++) {
+        TaskMediator.renderTask(task.children[i]);
+    }
 }
 
 TaskMediator.resizeInput = function() {
@@ -117,7 +136,7 @@ TaskMediator.onDblclickTitle = function(e) {
 }
 
 TaskMediator.onClickPlus = function(event) {
-    var currentId = TaskMediator.getIdFromDomId($(this).parents('.task').attr('id'));
+    var currentId = parseInt(TaskMediator.getIdFromDomId($(this).parents('.task').attr('id')));
     if ($(this).hasClass('open')) {
         $(".parent-id-"+currentId).slideUp(200);
         $(this).removeClass('open');
@@ -125,7 +144,7 @@ TaskMediator.onClickPlus = function(event) {
         $(".parent-id-"+currentId).slideDown(200);
         $(this).addClass('open');
     }
-
+    Tasks.loadChildren(currentId);
 }
 
 TaskMediator.getIdFromDomId = function(domId) {

@@ -3,14 +3,17 @@ var Tasks = {};
 Tasks._task = {};
 Tasks._tasks = [];
 Tasks._breadcrumb = [];
+Tasks.NUMBER = 100;
+
+Tasks.TASK_UPDATED = "taskUpdated";
+Tasks.CHILDREN_LOADED = "childrenLoaded";
 
 Tasks.initChildren = function(id, callback) {
     var url = "";
-    var number = 100;
     if (id == 0) {
         url = "/rest/tasks?root";
     } else {
-        url = "/rest/tasks/"+id+"/childs?number=" + number;
+        url = "/rest/tasks/"+id+"/childs?number=" + Tasks.NUMBER;
     }
     $.ajax({
         url: url,
@@ -24,6 +27,26 @@ Tasks.initChildren = function(id, callback) {
         dataType: "json"
     });
 };
+
+Tasks.loadChildren = function(id) {
+    var task = Tasks.getTask(id);
+    $.ajax({
+        url: "/rest/tasks/"+id+"/childs?number=" + Tasks.NUMBER,
+        success: function(data) {
+            task.children = [];
+            for ( var i = 0 ; i < data.data.length ; i ++) {
+                task.children.push(data.data[i].data);
+            }
+            Tasks.addChildren(data.data, task.level + 1);
+            $(Tasks).trigger(Tasks.CHILDREN_LOADED, task);
+        },
+        error: function(e) {
+            console.log('impossible to get children of ' + id);
+        },
+        dataType: "json"
+    });
+}
+
 
 Tasks.initTask = function(id, callback) {
     var number = 100;
@@ -92,7 +115,7 @@ Tasks.setTask = function(task) {
     this._task = task;
     this._tasks = [];
     task.level = 1;
-    task.strippedDescription = $("<div>" + task.description + "</div>").text();
+    task.strippedDescription = $("<div>").html(task.description).text();
     this._tasks.push(task);
 
 }
@@ -102,6 +125,7 @@ Tasks.addChildren = function(children, level) {
         var task = children[i].data;
         task.level = level;
         task.strippedDescription = task.description;
+        task.childrenToBeLoaded = 2;
         Tasks._tasks.push(task);
 
         if (typeof task.children != 'undefined') {
@@ -113,7 +137,7 @@ Tasks.addChildren = function(children, level) {
 Tasks.updateTitle = function(id, title) {
     var task = Tasks.getTask(id);
     task.title = title;
-    $(this).trigger("update", task);
+    $(this).trigger(Tasks.TASK_UPDATED, task);
 }
 
 Tasks.getTask = function(id) {

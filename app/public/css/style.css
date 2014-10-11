@@ -15,6 +15,7 @@ body {
     margin-right: auto;
     border-radius: 5px;
     border: solid 1px #d2d2d2;
+    min-height: 400px;
 }
 
 /*****************
@@ -24,6 +25,7 @@ body {
 .breadcrumb {
     border-bottom: solid 1px #eee;
     padding-bottom: 5px;
+    min-height:20px;
 }
 
 .bc-item {
@@ -115,7 +117,7 @@ body {
     overflow:hidden;
     text-overflow: ellipsis;
     display: inline-block;
-    max-width: 680px;
+    max-width: 650px;
 }
 
 .level1 {

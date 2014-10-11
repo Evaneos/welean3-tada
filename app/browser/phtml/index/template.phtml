@@ -1,13 +1,22 @@
 
 
 <script id="leveln" type="text/x-handlebars-template">
-    <div class='level level{{level}} parent-id-{{parent_id}}'>
+    <div class='level level{{level}} parent-id-{{parentId}}'>
         {{>task}}
+        {{#if childrenToBeLoaded}}
+        <div class='level level{{plusone level}} parent-id-{{id}} to-be-removed-{{id}}'>
+            <div class="task ">
+                <span class='title'>
+                    <span class='editable'>loading...</span>
+                </span>
+            </div>
+        </div>
+        {{/if}}
     </div>
 </script>
 <script id="partial-task" type="text/x-handlebars-template">
     <div id="tada-{{id}}" class="task ">
-        <span class="{{#ifel children}}plus{{/ifel}}"></span>
+        <span class="plus"></span>
         <span class='title'>
             <span class='editable'>{{title}}</span>
             <a href="#{{id}}" class="fa fa-chain"></a>
