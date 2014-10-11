@@ -81,6 +81,18 @@ class TaskRESTBuilder extends BaseBertheBuilder
      */
     protected function joinState(array $tasks = array(), array $tasksREST = array(), array $embeds = array())
     {
+        return $this->joinUniqueTagForCategoryTitle('state', $tasks, $tasksREST, $embeds);
+    }
+
+    /**
+     * @param string $categoryEmbedTitle
+     * @param Task[] $tasks
+     * @param TaskREST[] $tasksREST
+     * @param array $embeds
+     * @return TaskREST[]
+     */
+    private function joinUniqueTagForCategoryTitle($categoryEmbedTitle, array $tasks = array(), array $tasksREST = array(), array $embeds = array())
+    {
         $tasksIds = array();
         foreach($tasks as $task) {
             $tasksIds[] = $task->getId();
@@ -90,7 +102,7 @@ class TaskRESTBuilder extends BaseBertheBuilder
          * 1st, get list of tags for the 'state' tagCategory
          */
         $tagsIds = array();
-        $tags = $this->tagService->getTagsByCategoryTitle('state');
+        $tags = $this->tagService->getTagsByCategoryTitle($categoryEmbedTitle);
 
         /** @var TagRESTBuilder $tagRESTBuilder */
         $tagRESTBuilder = $this->container->get('Berthe-tags-RESTBuilder');
@@ -116,7 +128,7 @@ class TaskRESTBuilder extends BaseBertheBuilder
 
         foreach($tasks as $task) {
             if (array_key_exists($task->getId(), $taskTags)) {
-                $tasksREST[$task->getId()]->setEmbed('state', $convertedTags[$taskTags[$task->getId()]]);
+                $tasksREST[$task->getId()]->setEmbed($categoryEmbedTitle, $convertedTags[$taskTags[$task->getId()]]);
             }
         }
 
