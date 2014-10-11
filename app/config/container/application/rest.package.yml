@@ -48,12 +48,31 @@ classes :
             setStorage : [ @Berthe-tasks-Storage ]
             setVOFQCN : [ '\Tada\Model\Task' ]
 
+    Berthe-taskhastags-Manager :
+        class : \Berthe\BaseManager
+        call :
+            addSaveHook[0] : [ @CreatedDateSaveHook ]
+            setValidator : [ @Berthe-taskhastags-Validator ]
+            setStorage : [ @Berthe-taskhastags-Storage ]
+            setVOFQCN : [ '\Tada\Model\TaskHasTag' ]
+
+    Berthe-taskhastags-Service :
+        class: \Berthe\BaseService
+        arguments: [ @Berthe-taskhastags-Manager, @Berthe-taskhastags-Builder ]
+
     Berthe-tasks-Builder :
         class : \Tada\Model\TaskBuilder
+
+    Berthe-taskhastags-Builder :
+        class : \Tada\Model\TaskHasTagBuilder
 
     Berthe-tasks-Service :
         class: \Tada\Service\TaskService
         arguments: [ @Berthe-tasks-Manager, @Berthe-tasks-Builder ]
+        call:
+            setTagService: [ @Berthe-tags-Service ]
+            setTagCategoryService: [ @Berthe-tagcategories-Service ]
+            setTaskHasTagService: [ @Berthe-taskhastags-Service ]
 
     Berthe-tagcategories-Service :
         class: \Tada\Service\TagCategoryService

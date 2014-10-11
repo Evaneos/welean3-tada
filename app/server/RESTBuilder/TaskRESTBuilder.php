@@ -125,10 +125,14 @@ class TaskRESTBuilder extends BaseBertheBuilder
         foreach($resultSet as $taskHasTag) {
             $taskTags[$taskHasTag->getTaskId()] = $taskHasTag->getTagId();
         }
-
         foreach($tasks as $task) {
             if (array_key_exists($task->getId(), $taskTags)) {
-                $tasksREST[$task->getId()]->setEmbed($categoryEmbedTitle, $convertedTags[$taskTags[$task->getId()]]);
+                //cause in case of unique resource, $tasksREST is not indexed by id
+                foreach($tasksREST as $taskREST) {
+                    if ($taskREST->getId() == $task->getId()) {
+                        $taskREST->setEmbed($categoryEmbedTitle, $convertedTags[$taskTags[$task->getId()]]);
+                    }
+                }
             }
         }
 
