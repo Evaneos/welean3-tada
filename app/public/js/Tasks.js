@@ -20,9 +20,9 @@ Tasks.HOME = {
 Tasks.initChildren = function(id, callback) {
     var url = "";
     if (id == 0) {
-        url = "/rest/tasks?root";
+        url = "/rest/tasks?root&embed=nbChilds";
     } else {
-        url = "/rest/tasks/"+id+"/childs?number=" + Tasks.NUMBER;
+        url = "/rest/tasks/"+id+"/childs?embed=nbChilds&number=" + Tasks.NUMBER;
     }
     $.ajax({
         url: url,
@@ -40,7 +40,7 @@ Tasks.initChildren = function(id, callback) {
 Tasks.loadChildren = function(id) {
     var task = Tasks.hasTask(id);
     $.ajax({
-        url: "/rest/tasks/"+id+"/childs?number=" + Tasks.NUMBER,
+        url: "/rest/tasks/"+id+"/childs?embed=nbChilds&number=" + Tasks.NUMBER,
         success: function(data) {
             task.children = [];
             for ( var i = 0 ; i < data.data.length ; i ++) {
@@ -60,7 +60,7 @@ Tasks.loadTask = function(id) {
     var number = 100;
     var task = {};
 
-    url = "/rest/tasks/"+id+"&number=" + number;
+    url = "/rest/tasks/"+id;
     $.ajax({
         url: "/rest/tasks/"+id,
         success: function(data) {
@@ -89,7 +89,6 @@ Tasks.setBaseTask = function(id, callback) {
         $.ajax({
             url: "/rest/tasks/"+id,
             success: function(data) {
-                console.log(data);
                 Tasks._addMainTaskInTasks(data.data);
                 Tasks.initChildren(id, callback);
             },
@@ -125,14 +124,32 @@ Tasks.initBreadcrumb = function(id, callback) {
         });
     }
 }
-
+var index = 0;
 Tasks._addMainTaskInTasks = function(task) {
+    index = 0;
     this._task = task;
+    Tasks._calculateProperties(task);
     task.level = 1;
-    task.strippedDescription = $("<div>").html(task.description).text();
-    task.toolbar = true;
+    task.toolbar = false;
+    task.hasChildren = false;
+    Tasks._tasks = {};
     Tasks._tasks[task.id] = task;
 
+}
+
+Tasks._calculateProperties = function(task) {
+    index ++;
+    task.strippedDescription = $("<div>").html(task.description).text();
+    task.toolbar = false;
+    task.childrenToBeLoaded = 1;
+    task.index = index;
+    console.log(task);
+    if (parseInt(task.nbChilds) > 0) {
+        task.hasChildren = true;
+        task.toolbar = true;
+    } else {
+        task.hasChildren = false;
+    }
 }
 
 Tasks.addChildren = function(children, level) {
@@ -146,12 +163,6 @@ Tasks.addChildren = function(children, level) {
             Tasks.addChildren(task.children, level + 1);
         }
     }
-}
-
-Tasks._calculateProperties = function(task) {
-    task.strippedDescription = $("<div>").html(task.description).text();
-    task.toolbar = true;
-    task.childrenToBeLoaded = 1;
 }
 
 Tasks.updateTitle = function(id, title) {
@@ -188,7 +199,9 @@ Tasks.hasTask = function(id) {
 
 Tasks.getAllTasks = function() {
     console.log(Tasks._tasks);
-    return Tasks._tasks;
+    return _.sortBy(Tasks._tasks, function(task) {
+        return task.index;
+    });
 }
 
 Tasks.getBreadcrumb = function() {
