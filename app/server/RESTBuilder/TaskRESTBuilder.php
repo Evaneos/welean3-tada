@@ -91,6 +91,11 @@ class TaskRESTBuilder extends BaseBertheBuilder
          */
         $tagsIds = array();
         $tags = $this->tagService->getTagsByCategoryTitle('state');
+
+        /** @var TagRESTBuilder $tagRESTBuilder */
+        $tagRESTBuilder = $this->container->get('Berthe-tags-RESTBuilder');
+        list($convertedTags,,) = $tagRESTBuilder->convertAll($tags, $embeds);
+
         foreach($tags as $tag) {
             $tagsIds[] = $tag->getId();
         }
@@ -109,12 +114,9 @@ class TaskRESTBuilder extends BaseBertheBuilder
             $taskTags[$taskHasTag->getTaskId()] = $taskHasTag->getTagId();
         }
 
-
         foreach($tasks as $task) {
             if (array_key_exists($task->getId(), $taskTags)) {
-                $tasksREST[$task->getId()]->setEmbed('state', new \Pyrite\PyRest\PyRestObjectPrimitive($tags[$taskTags[$task->getId()]]->getTitle()));
-            } else {
-                $tasksREST[$task->getId()]->setEmbed('state', new \Pyrite\PyRest\PyRestObjectPrimitive(null));
+                $tasksREST[$task->getId()]->setEmbed('state', $convertedTags[$taskTags[$task->getId()]]);
             }
         }
 
