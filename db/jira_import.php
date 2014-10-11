@@ -53,7 +53,7 @@ function putTaskParent($task_id, $parent_id)
     global $client;
 
     $body = array (
-        'parent_id' => $parent_id,
+        'parentId' => $parent_id,
     );
 
     $url = 'http://tada:t4d4n00@www.tada.io/rest/tasks/' . $task_id;
@@ -139,9 +139,11 @@ foreach($tasks as $key => $task) {
             $tasks[$key]['id'] = $id;
             break;
         case 'task':
-            printf("%s Posting simple task (%s) : %s\n", date('Y-m-d H:m:s'), $key, $task['title']);
-            $id = postTask($task['title'], $task['description']);
-            $tasks[$key]['id'] = $id;
+            if (isset($tasks[$task['parent']])) {
+                printf("%s Posting simple task (%s) : %s\n", date('Y-m-d H:m:s'), $key, $task['title']);
+                $id = postTask($task['title'], $task['description']);
+                $tasks[$key]['id'] = $id;
+            }
             break;
     }
 }
@@ -149,54 +151,10 @@ foreach($tasks as $key => $task) {
 foreach($tasks as $key => $task) {
     switch ($task['parentType']) {
         case 'task':
-            printf("%s Patching parent task (%d) : %d\n", date('Y-m-d H:m:s'), $task['id'], $tasks[$task['parent']]['id']);
-            putTaskParent($task['id'], $tasks[$task['parent']]['id']);
+            if (isset($tasks[$task['parent']])) {
+                printf("%s Patching parent task (%d) : %d\n", date('Y-m-d H:m:s'), $task['id'], $tasks[$task['parent']]['id']);
+                putTaskParent($task['id'], $tasks[$task['parent']]['id']);
+            }
             break;
     }
 }
-
-die;
-var_dump($epics);
-
-die;
-
-?>
-do
-$body$
-declare
-begin
-
-truncate table task;
-
-<?php
-
-$i=0;
-
-foreach ($tasks as $key => $task) {
-    printf ("PERFORM create_task ('%s', %s, %s);\n",
-        str_replace("'", "''", $task['title']),
-        $task['description'] ? "'" . str_replace("'", "''", $task['description']) . "'" : 'NULL',
-        ++$i
-    );
-}
-
-foreach ($tasks as $key => $task) {
-    $parent = null;
-
-    if (isset($task['parent'])) {
-        if (!array_key_exists($task['parent'], $tasks)) {
-            echo '-- Parent not found : ' . $task['parent'] . "\n";
-        }
-        $parent = array_key_exists($task['parent'], $tasks) ? $tasks[$task['parent']]['title'] : $task['project']; //just in case missing parent
-        printf ("PERFORM set_task_parent ('%s', '%s');\n",
-            str_replace("'", "''", $task['title']),
-            str_replace("'", "''", $parent)
-        );
-    }
-}
-
-?>
-
-end
-$body$
-;

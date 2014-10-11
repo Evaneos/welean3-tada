@@ -3,10 +3,27 @@ $body$
 declare
 begin
 
+
+IF EXISTS (SELECT * FROM information_schema.tables WHERE table_name='task_has_tag' AND table_schema='public')
+THEN
+    DROP TABLE task_has_tag;
+END IF;
+
+IF EXISTS (SELECT * FROM information_schema.tables WHERE table_name='tag' AND table_schema='public')
+THEN
+    DROP TABLE tag;
+END IF;
+
+IF EXISTS (SELECT * FROM information_schema.tables WHERE table_name='tag_category' AND table_schema='public')
+THEN
+    DROP TABLE tag_category;
+END IF;
+
 IF EXISTS (SELECT * FROM information_schema.tables WHERE table_name='task' AND table_schema='public')
 THEN
     DROP TABLE task;
 END IF;
+
 
 CREATE TABLE task (
     id                serial NOT NULL,
@@ -28,10 +45,6 @@ WITH (
 CREATE index i_task_parent on task USING btree(parent_id);
 CREATE index i_rank on task USING btree(rank);
 
-IF EXISTS (SELECT * FROM information_schema.tables WHERE table_name='tag_category' AND table_schema='public')
-THEN
-    DROP TABLE tag_category;
-END IF;
 
 CREATE TABLE tag_category (
     id                serial NOT NULL,
@@ -45,11 +58,6 @@ WITH (
 );
 
 
-IF EXISTS (SELECT * FROM information_schema.tables WHERE table_name='tag' AND table_schema='public')
-THEN
-    DROP TABLE tag;
-END IF;
-
 CREATE TABLE tag (
     id                serial NOT NULL,
     created_at        timestamp(0) without time zone NOT NULL DEFAULT now(),
@@ -62,12 +70,6 @@ CREATE TABLE tag (
 WITH (
     OIDS=FALSE
 );
-
-
-IF EXISTS (SELECT * FROM information_schema.tables WHERE table_name='task_has_tag' AND table_schema='public')
-THEN
-    DROP TABLE task_has_tag;
-END IF;
 
 CREATE TABLE task_has_tag (
     id                serial NOT NULL,
