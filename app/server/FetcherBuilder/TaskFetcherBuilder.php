@@ -28,6 +28,6 @@ class TaskFetcherBuilder extends \EVFramework\Berthe\Fetcher\BaseFetcherBuilder
 
     protected function createSorts(Fetcher $fetcher, PyRestConfiguration $config)
     {
-
+        $fetcher->sortByRank();
     }
 }
