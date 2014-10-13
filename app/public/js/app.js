@@ -19,8 +19,7 @@ $( document ).ready(function() {
             console.info('object created', data);
         }
         else if (data.type == "update") {
-            console.info('object updated', data);
-
+            console.info('object updated from outside', data);
             Tasks.loadTask(id);
         }
         else {

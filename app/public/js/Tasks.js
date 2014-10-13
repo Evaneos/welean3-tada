@@ -3,12 +3,13 @@ var Tasks = {};
 Tasks._task = {};
 Tasks._tasks = {};
 Tasks._parents = [];
-Tasks.NUMBER = 20;
+Tasks.NUMBER = 40;
 
 Tasks.TASK_UPDATED = "taskUpdated";
 Tasks.CHILDREN_LOADED = "childrenLoaded";
 Tasks.PARENTS_LOADED = "parentsLoaded";
 Tasks.MAIN_TASK_CHANGING = "mainTaskChanging";
+Tasks.TASK_MOVED = "taskMoved";
 
 Tasks.HOME = {
     "id": 0,
@@ -28,8 +29,9 @@ Tasks.loadTask = function(id, callback) {
     $.ajax({
         url: url,
         success: function(data) {
-            if (typeof callback != 'undefined') { callback(data.data); }
-            Tasks.taskLoaded(data.data);
+            var task = data.data;
+            if (typeof callback != 'undefined') { callback(task); }
+            Tasks.taskLoaded(task);
         },
         error: function(e) {
             console.log(e);
@@ -39,7 +41,18 @@ Tasks.loadTask = function(id, callback) {
 };
 
 Tasks.taskLoaded = function(task) {
-    Tasks._calculateProperties(task);
+    var oldTask = Tasks.hasTask(task.id);
+    if (oldTask) {
+        if (oldTask.title !== task.title) {
+            Tasks.updateTitle(task, task.title);
+        }
+        if (oldTask.rank !== task.rank) {
+            Tasks.updateRank(task, task.rank);
+        }
+            Tasks._calculateProperties(oldTask);
+    } else {
+        Tasks._calculateProperties(task);
+    }
 }
 
 Tasks.setMainTask = function(id) {
@@ -51,7 +64,6 @@ Tasks.setMainTask = function(id) {
         Tasks._addMainTaskInTasks(this.HOME);
         Tasks.initParents();
         Tasks.loadChildren();
-        Tasks.taskLoaded(this._task);
     } else {
         Tasks.loadTask(id, function(task) {
                 Tasks._addMainTaskInTasks(task);
@@ -79,7 +91,7 @@ Tasks._calculateProperties = function(task) {
     task.hasChildren = false;
 
     // parent_id
-    if (typeof task.parentId == 'undefined' && task.id != 0) {
+    if ((task.parentId == null || typeof task.parentId == 'undefined') && task.id != 0) {
         task.parentId = 0;
     }
 
@@ -122,9 +134,59 @@ Tasks.hasTask = function(id) {
     return _.findWhere(this._tasks, {"id":id});
 }
 
+Tasks.getIndex = function(task) {
+    var parent = Tasks.hasTask(task.parentId);
+
+    if (parent) {
+        var tasks = Tasks.getChildren(parent);
+        for (var i = 0 ; i < tasks.length ; i ++) {
+            if (tasks[i].id == task.id) {
+                return i;
+            }
+        }
+    } else  {
+        return false;
+    }
+}
+
+Tasks.getNext = function(task) {
+    var parent = Tasks.hasTask(task.parentId);
+    var index = Tasks.getIndex(task);
+    if (parent) {
+        var tasks = Tasks.getChildren(parent);
+        if (tasks.length > index) {
+            return tasks[index + 1];
+        } else {
+            return false;
+        }
+    } else  {
+        return false;
+    }
+}
+
+Tasks.getNextByRank = function(rank, task) {
+    var parent = Tasks.hasTask(task.parentId);
+    var tasks = Tasks.getChildren(parent);
+    for (var i = 0 ; i < tasks.length ; i ++) {
+        if (tasks[i].rank > rank) {
+            return tasks[i];
+        }
+    }
+    return false;
+}
+
+Tasks.getChildren = function(task) {
+    if (typeof task.children == 'undefined') {
+        return [];
+    }
+    return _.sortBy(task.children, function(task) {
+        return task.rank;
+    });
+}
+
 Tasks.getAllTasks = function() {
     return _.sortBy(Tasks._tasks, function(task) {
-        return task.index;
+        return task.rank;
     });
 }
 
@@ -159,7 +221,8 @@ Tasks.create = function(title, callback) {
     });
 }
 
-Tasks.updateTitle = function(id, title) {
+Tasks.updateTitle = function(task, title) {
+    var id = task.id;
     console.info(id, title);
     var task = Tasks.hasTask(id);
     task.title = title;
@@ -187,54 +250,16 @@ Tasks.updateTitle = function(id, title) {
     $(this).trigger(Tasks.TASK_UPDATED, task);
 }
 
-Tasks.updateRank = function(task, nextTask) {
-    if (task.parentId != nextTask.parentId) {
-        alert('WTF');
-    }
-    console.log("rank:" + task.rank);
-    console.log("next rank:" + nextTask.rank);
+Tasks.updateRank = function(task, rank) {
+    Tasks.updateRankWithNext(task, Tasks.getNextByRank(rank, task));
+}
 
-    var tasksSortByRank = _.sortBy(this._tasks[task.parentId].children, function(task) {return task.rank});
-
-    if(task.rank < nextTask.rank) {
-        console.log('cas 1');
-        var indexOfTask = 0;
-        for (var i = 0 ; i < tasksSortByRank.length ; i ++) {
-            if (tasksSortByRank[i].id == task.id) {
-                indexOfTask = i;
-                break;
-            }
-        }
-        Tasks.setRank(task, nextTask.rank);
-
-        for (var i = indexOfTask ; i < tasksSortByRank.length ; i ++) {
-            if (tasksSortByRank[i].id == nextTask.id) {
-                break;
-            }
-            Tasks.setRank(tasksSortByRank[i+1], tasksSortByRank[i+1].rank - 1);
-        }
-
-    } else {
-        var indexOfNextTask = 0;
-        for (var i = 0 ; i < tasksSortByRank.length ; i ++) {
-            if (tasksSortByRank[i].id == nextTask.id) {
-                indexOfNextTask = i;
-                break;
-            }
-        }
-        Tasks.setRank(task, nextTask.rank);
-        for (var i = indexOfNextTask ; i < tasksSortByRank.length ; i ++) {
-            if (tasksSortByRank[i].id == task.id) {
-                break;
-            }
-            Tasks.setRank(tasksSortByRank[i], tasksSortByRank[i].rank + 1);
-        }
-    }
-    $(this).trigger(Tasks.TASK_UPDATED, task);
+Tasks.updateRankWithNextFromView = function(task, nextTask) {
 
 
+    var rank = Tasks.updateRankWithNext(task, nextTask);
     var data = {
-        'rank' : task.rank
+        'rank' : rank
     }
 
     $.ajax({
@@ -249,13 +274,48 @@ Tasks.updateRank = function(task, nextTask) {
         data : JSON.stringify(data),
         dataType: "json"
     });
+}
 
+Tasks.updateRankWithNext = function(task, nextTask) {
+    if (task.parentId != nextTask.parentId) {
+        alert('WTF');
+    }
+    console.log("rank:" + task.rank);
+    console.log("next rank:" + nextTask.rank);
 
-    $(this).trigger(Tasks.TASK_UPDATED, task);
+    var tasksSortByRank = _.sortBy(Tasks.getChildren(this._tasks[task.parentId]), function(task) {return task.rank});
+
+    var indexOfNextTask = Tasks.getIndex(nextTask);
+    if(task.rank < nextTask.rank) {
+        console.log('cas 1');
+
+        var indexOfTask = Tasks.getIndex(task);
+
+        Tasks.setRank(task, tasksSortByRank[indexOfNextTask - 1 ].rank);
+        for (var i = indexOfTask + 1; i < tasksSortByRank.length ; i ++) {
+            if (tasksSortByRank[i].id == nextTask.id) {
+                break;
+            }
+            Tasks.setRank(tasksSortByRank[i], tasksSortByRank[i].rank - 1);
+        }
+
+    } else {
+        Tasks.setRank(task, nextTask.rank);
+        for (var i = indexOfNextTask ; i < tasksSortByRank.length ; i ++) {
+            if (tasksSortByRank[i].id == task.id) {
+                break;
+            }
+            Tasks.setRank(tasksSortByRank[i], tasksSortByRank[i].rank + 1);
+        }
+    }
+
+    $(this).trigger(Tasks.TASK_MOVED, task);
+
+    return task.rank;
 }
 
 Tasks.setRank = function(task, rank) {
-    console.log(task.rank + ' -> ' + rank);
+    $(this).trigger(Tasks.TASK_UPDATED, task);
     task.rank = rank;
 }
 
@@ -309,13 +369,13 @@ Tasks.loadChildren = function(task, more) {
         task = this._task;
     }
 
-    if (typeof task.childrenPage == 'undefined') {
-        task.childrenPage = 1;
-    } else if (more) {
-        task.childrenPage ++ ;
+    var page = 1;
+    if (typeof task.children != 'undefined') {
+        var page = Math.floor(task.children.length / Tasks.NUMBER) + 1;
     }
+    console.log(page);
 
-    var parameters = "embed=nbChilds&number=" + Tasks.NUMBER + "&page=" + task.childrenPage;
+    var parameters = "embed=nbChilds&number=" + Tasks.NUMBER + "&page=" + page;
 
     // Load children
     if (task.id == 0) {
@@ -329,14 +389,13 @@ Tasks.loadChildren = function(task, more) {
             var children = [];
             for ( var i = 0 ; i < data.data.length ; i ++) {
                 var child = data.data[i].data;
-                console.log(child.rank);
                 children.push(child);
                 if (child.parentId == null) {
                     child.parentId = 0;
                 }
             }
             Tasks.addChildren(task, children);
-            Tasks._calculateProperties(task);
+            Tasks.taskLoaded(task);
             $(Tasks).trigger(Tasks.CHILDREN_LOADED, task);
         },
         error: function(e) {
@@ -348,14 +407,17 @@ Tasks.loadChildren = function(task, more) {
 
 Tasks.addChildren = function(task, children) {
     var level = task.level + 1;
-    task.children = children;
+    if (typeof task.children == 'undefined') {
+        task.children = [];
+    }
     for (var i = 0 ; i < children.length ; i++) {
-        var task = children[i];
-        task.level = level;
-        Tasks._calculateProperties(task);
+        var child = children[i];
+        child.level = level;
+        task.children.push(child);
+        Tasks._calculateProperties(child);
 
-        if (typeof task.children != 'undefined') {
-            Tasks.addChildren(task, task.children);
+        if (typeof child.children != 'undefined') {
+            Tasks.addChildren(child, child.children);
         }
     }
 }

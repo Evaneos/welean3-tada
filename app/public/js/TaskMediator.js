@@ -31,7 +31,7 @@ TaskMediator.initEvents = function(event) {
     $(document).on('keyup', 'input[type="text"]',TaskMediator.resizeInput);
 
     $(Tasks).on(Tasks.TASK_UPDATED, TaskMediator.onUpdate);
-
+    $(Tasks).on(Tasks.TASK_MOVED, TaskMediator.onTaskMoved);
     $(Tasks).on(Tasks.CHILDREN_LOADED, TaskMediator.onChildrenLoaded);
 
     $(Tasks).on(Tasks.MAIN_TASK_LOADING, function() {
@@ -45,7 +45,8 @@ TaskMediator.initLoading = function(task) {
 
     if (! task.more) {
         $(".to-be-removed-" + task.id).hide();
-    } else if (loading == false) {
+    }
+    if (loading == false) {
         $(document).on("inview", '.more:visible',  function(event, isInView) {
             if (isInView) {
                 var id = parseInt($(this).attr('data-link-id'));
@@ -69,7 +70,7 @@ TaskMediator.initSortable = function() {
         stop: function(event, ui) {
             var task = TaskMediator.getTaskFromDom(ui.item);
             var nextTask = TaskMediator.getTaskFromDom(ui.item.next());
-            Tasks.updateRank(task, nextTask);
+            Tasks.updateRankWithNextFromView(task, nextTask);
         }
     });
     $( ".tasklist" ).disableSelection();
@@ -79,24 +80,36 @@ TaskMediator.renderTask = function(task) {
 
     // Add it or replace DOM?
     var actualDom = TaskMediator.getDomFromId(task.id);
-
+    var insertDom = TaskMediator.getDomFromId(task.parentId).siblings(".insert-children-here")
     if (typeof actualDom != 'undefined' && actualDom.length != 0) {
+        var indexInModel = Tasks.getIndex(task);
+        var indexInDom = $("#tada-"+task.id).parents('.level').index();
+
         var dom = $(TaskMediator.templates["task"](task));
 
-        dom.insertAfter(actualDom);
-        actualDom.remove();
+        if (indexInModel == indexInDom) {
+            dom.insertAfter(actualDom);
+            actualDom.remove();
+        } else {
+            var levelDom = actualDom.parents(".level").first();
+            var newLeveldom = $(TaskMediator.templates["leveln"](task));
+            levelDom.remove();
+            if (indexInModel == 0) {
+                newLeveldom.prependTo(insertDom);
+            } else {
+                insertDom.children().eq(indexInModel - 1).after(newLeveldom);
+            }
+        }
 
     } else {
 
         // create dom
         var dom = $(TaskMediator.templates["leveln"](task));
-
-        var insertBeforeDom = TaskMediator.getDomFromId(task.parentId).siblings(".insert-children-here");
-        if (typeof insertBeforeDom == 'undefined' || insertBeforeDom.length == 0 ) {
+        if (typeof insertDom == 'undefined' || insertDom.length == 0 ) {
             var parentDom = $('.levels');
             dom.appendTo(parentDom);
         } else {
-            dom.appendTo(insertBeforeDom);
+            dom.appendTo(insertDom);
         }
     }
     TaskMediator.initSortable();
@@ -119,6 +132,15 @@ TaskMediator.compileTemplateName = function(name) {
     return Handlebars.compile($("#"+name).html());
 }
 
+
+TaskMediator.onTaskMoved = function(event, task) {
+    var parentTask = Tasks.hasTask(task.parentId);
+    var tasks = Tasks.getChildren(parentTask);
+    for (var i = 0 ; i < tasks.length ; i ++ ) {
+        TaskMediator.renderTask(tasks[i]);
+    }
+}
+
 TaskMediator.onUpdate = function(event, task) {
     if (Tasks.getMainTask().id != TaskMediator.currentId) {
         $(".levels").html("");
@@ -134,6 +156,7 @@ TaskMediator.onUpdate = function(event, task) {
 TaskMediator.onChildrenLoaded = function(event, task) {
 
     TaskMediator.initLoading(task);
+    var children = Tasks.getChildren(task);
     for(var i = 0 ; i < task.children.length ; i ++) {
         var child = task.children[i];
         // check if task is not already rendered
@@ -174,11 +197,10 @@ TaskMediator.onDblclickTitle = function(e) {
     input.on('blur', function(event) {
         Mousetrap.unbind('enter');
         $(el).removeClass('edit');
-        var id = TaskMediator.getIdFromDom(this);
-        Tasks.updateTitle(parseInt(id), input.val());
+        var task = TaskMediator.getTaskFromDom(this);
+        Tasks.updateTitle(task, input.val());
     });
     return false;
-
 }
 
 TaskMediator.newTaskInit = function(task) {
@@ -211,12 +233,13 @@ TaskMediator.newTaskInit = function(task) {
 
 TaskMediator.onClickPlus = function(event) {
     var currentId = parseInt(TaskMediator.getIdFromDom(this));
-    if ($(this).hasClass('open')) {
-        $(".parent-id-"+currentId).slideUp(200);
-        $(this).removeClass('open');
+    var dom = $(this).parents('.level').first();
+    if (dom.hasClass('open')) {
+        $(".parent-id-"+currentId).hide();
+        dom.removeClass('open');
     } else {
-        $(".parent-id-"+currentId).slideDown(200);
-        $(this).addClass('open');
+        $(".parent-id-"+currentId).show();
+        dom.addClass('open');
     }
 }
 

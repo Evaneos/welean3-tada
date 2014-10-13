@@ -86,8 +86,13 @@ body {
     left: -40px;
 }
 
-.task .plus::before, .task .fa-chain {
+.task .plus::before {
     content:"+";
+}
+
+.open .plus:first-of-type::before {
+    content:"-";
+
 }
 
 .task .plus::before {
@@ -114,11 +119,6 @@ body {
 
 .fa-chain {
     display: none;
-}
-
-.task .plus.open::before {
-    content:"-";
-
 }
 
 .task:hover .fa-chain {
