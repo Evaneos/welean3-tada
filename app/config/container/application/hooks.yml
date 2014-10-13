@@ -9,3 +9,5 @@ classes :
     UpdateAllRankSaveHook :
         class : \Tada\Hook\UpdateAllRankSaveHook
         arguments : [ @Berthe-tasks-Manager ]
+    StripDescriptionSaveHook :
+        class : \Tada\Hook\StripDescriptionSaveHook

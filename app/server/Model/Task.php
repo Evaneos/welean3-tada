@@ -33,6 +33,11 @@ class Task extends \Berthe\AbstractVO
     protected $description;
 
     /**
+     * @var string
+     */
+    protected $stripped_description;
+
+    /**
      * @var int parent_id
      */
     protected $parent_id;
@@ -132,5 +137,21 @@ class Task extends \Berthe\AbstractVO
     public function setCreatedAt($value) {
         $this->created_at = $value;
         return $this;
+    }
+
+    /**
+     * @param string $stripped_description
+     */
+    public function setStrippedDescription($stripped_description)
+    {
+        $this->stripped_description = $stripped_description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStrippedDescription()
+    {
+        return $this->stripped_description;
     }
 }
