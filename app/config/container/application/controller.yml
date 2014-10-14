@@ -4,6 +4,9 @@ classes :
         props :
             socketUrl : %socket_url
 
+    EmptyController :
+        class : \Tada\Controller\EmptyController
+
     GetAllController :
         class : \Tada\Controller\GetAllController
         call :

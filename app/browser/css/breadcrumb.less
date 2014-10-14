@@ -1,0 +1,29 @@
+
+/*****************
+* BREADCRUMB
+* ***************/
+
+.breadcrumb {
+    border-bottom: solid 1px @border-light;
+    padding-bottom: 5px;
+    min-height:20px;
+}
+
+.bc-item {
+    color: @light;
+    text-decoration: none;
+    margin: 0 8px;
+    position: relative;
+}
+
+.bc-item:hover {
+    text-decoration: underline;
+}
+
+.bc-item::after {
+    position: absolute;
+    right: -14px;
+    content: " > ";
+    color: @lighter;
+    text-decoration: none;
+}
