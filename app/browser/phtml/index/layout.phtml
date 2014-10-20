@@ -1,7 +1,7 @@
 <div class="container">
 
     <?php echo $this->getResult('header'); ?>
-    <div class='content'>
+    <div class='content' ng-controller="TadaController">
         <div class='breadcrumb'>
             <a href="#" class="bc-item">Home</a>
         </div>
@@ -10,5 +10,6 @@
     </div>
 
 </div>
+
 <?php echo $this->getResult('task'); ?>
 <?php echo $this->getResult('template'); ?>

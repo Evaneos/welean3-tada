@@ -15,22 +15,6 @@ routes:
                 # ViewRenderer:
                 #     success: /browser/twig/index/index.html.twig
                 Executor: [ IndexController ]
-    angular:
-        route:
-            pattern: "/angular/"
-            methods: [ get ]
-        dispatch:
-            PyriteSessionFactory: { 'start': true }
-            PyriteApplicationFactory:
-                PhtmlRenderer[0] : [ angular/main_layout.phtml ]
-                PhtmlRenderer[1] : [ angular/layout.phtml ]
-                PhtmlRenderer[2] : [ angular/head.phtml, header ]
-                PhtmlRenderer[3] : [ angular/template.phtml, template ]
-                PhtmlRenderer[4] : [ angular/task.phtml, task ]
-
-                # ViewRenderer:
-                #     success: /browser/twig/index/index.html.twig
-                Executor: [ EmptyController ]
     create:
         route:
             pattern: "/rest/tasks"
