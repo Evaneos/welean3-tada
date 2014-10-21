@@ -1,5 +1,4 @@
 'use strict';
-
-var app = require('angular').module('tada', []);
+var app = angular.module('tada', ['restangular']);
 
 app.controller('TadaController', require('./TadaController'));
